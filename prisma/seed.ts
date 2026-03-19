@@ -1,4 +1,5 @@
-import { PrismaClient, MuscleGroup } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+type MuscleGroup = string;
 
 const prisma = new PrismaClient();
 
