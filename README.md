@@ -33,7 +33,7 @@ npm install
 npx prisma migrate dev --name init
 ```
 
-### 4. טעינת רשימת התרגילים
+### 4. sטעינת רשימת התרגילים
 ```bash
 npm run db:seed
 ```
@@ -117,6 +117,21 @@ CLOUDINARY_API_SECRET=הסוד
 /progress-photo ← תמונות תקדמות חודשיות
 /profile        ← עריכת פרטים אישיים
 ```
+
+---
+
+## עדכון האפליקציה (Deploy)
+
+האפליקציה מאוחסנת ב-**Vercel** עם בסיס נתונים ב-**Neon** (PostgreSQL).
+
+לאחר שינוי בקוד, הרץ בטרמינל:
+```bash
+git add .
+git commit -m "תיאור השינוי"
+git push
+```
+
+Vercel יזהה את ה-push ויעשה deploy אוטומטית תוך ~30 שניות.
 
 ---
 
