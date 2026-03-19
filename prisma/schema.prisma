@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  name            String
+  role            String   @default("USER") // ADMIN | USER
+  passwordHash    String?
+  age             Int      @default(25)
+  weightKg        Float    @default(75)
+  heightCm        Float    @default(175)
+  photoUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workoutPlans    WorkoutPlan[]
+  workoutSessions WorkoutSession[]
+  progressPhotos  ProgressPhoto[]
+}
+
+model Exercise {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  nameHe      String
+  muscleGroup String  // CHEST | BACK | LEGS | SHOULDERS | BICEPS | TRICEPS | ABS | CARDIO | FUNCTIONAL | GLUTES | CALVES | OTHER
+  lottieFile  String
+  description String?
+
+  planExercises    WorkoutPlanExercise[]
+  sessionExercises SessionExercise[]
+}
+
+model WorkoutPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  workoutType String   // PUSH | PULL | LEGS | CHEST_BACK | SHOULDERS_ARMS
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises WorkoutPlanExercise[]
+  sessions  WorkoutSession[]
+
+  @@unique([userId, workoutType])
+}
+
+model WorkoutPlanExercise {
+  id             String @id @default(cuid())
+  planId         String
+  exerciseId     String
+  orderIndex     Int
+  sets           Int    @default(3)
+  reps           Int    @default(10)
+  targetWeightKg Float  @default(0)
+
+  plan     WorkoutPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  exercise Exercise    @relation(fields: [exerciseId], references: [id])
+
+  @@unique([planId, exerciseId])
+  @@unique([planId, orderIndex])
+}
+
+model WorkoutSession {
+  id               String    @id @default(cuid())
+  userId           String
+  planId           String
+  workoutType      String    // PUSH | PULL | LEGS | CHEST_BACK | SHOULDERS_ARMS
+  startedAt        DateTime  @default(now())
+  completedAt      DateTime?
+  difficultyRating Int?
+
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      WorkoutPlan       @relation(fields: [planId], references: [id])
+  exercises SessionExercise[]
+}
+
+model SessionExercise {
+  id           String  @id @default(cuid())
+  sessionId    String
+  exerciseId   String
+  orderIndex   Int
+  sets         Int
+  reps         Int
+  weightUsedKg Float
+  status       String  @default("PENDING") // PENDING | SUCCESS | PARTIAL | FAIL
+
+  session  WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise Exercise       @relation(fields: [exerciseId], references: [id])
+
+  @@unique([sessionId, orderIndex])
+}
+
+model ProgressPhoto {
+  id        String   @id @default(cuid())
+  userId    String
+  photoUrl  String
+  takenAt   DateTime @default(now())
+  monthYear String   // "2026-03"
+  weightKg  Float?
+  notes     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, monthYear])
+}
