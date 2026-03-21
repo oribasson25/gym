@@ -44,7 +44,11 @@ export function ChatClient({ currentUserId, partnerId, partnerName }: ChatClient
           lastCreatedAt.current = newMessages[newMessages.length - 1].createdAt;
 
           if (after) {
-            setMessages((prev) => [...prev, ...newMessages]);
+            setMessages((prev) => {
+              const existingIds = new Set(prev.map((m) => m.id));
+              const unique = newMessages.filter((m) => !existingIds.has(m.id));
+              return unique.length > 0 ? [...prev, ...unique] : prev;
+            });
           } else {
             setMessages(newMessages);
           }
@@ -94,6 +98,7 @@ export function ChatClient({ currentUserId, partnerId, partnerName }: ChatClient
       });
       if (res.ok) {
         const data = await res.json();
+        lastCreatedAt.current = data.message.createdAt;
         setMessages((prev) =>
           prev.map((m) => (m.id === tempMessage.id ? data.message : m))
         );
