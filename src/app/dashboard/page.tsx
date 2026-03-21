@@ -41,6 +41,7 @@ export default async function DashboardPage() {
   return (
     <DashboardClient
       userName={user.name}
+      userRole={user.role}
       lastByType={lastByType}
       needsPhotoReminder={needsPhoto}
     />

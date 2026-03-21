@@ -49,6 +49,15 @@ export default function PlanEditorPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Admin-only check
+  useEffect(() => {
+    fetch("/api/user").then(r => r.json()).then(data => {
+      if (!data.user || data.user.role !== "ADMIN") {
+        router.replace("/dashboard");
+      }
+    });
+  }, [router]);
+
   const loadData = useCallback(async () => {
     setLoading(true);
     try {

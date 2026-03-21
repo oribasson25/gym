@@ -17,8 +17,21 @@ export async function PUT(
   if (!admin) return NextResponse.json({ error: "אין הרשאה" }, { status: 403 });
 
   const { id } = await params;
-  const { password } = await req.json();
+  const { password, role } = await req.json();
 
+  // Update role
+  if (role) {
+    if (role !== "ADMIN" && role !== "USER") {
+      return NextResponse.json({ error: "תפקיד לא תקין" }, { status: 400 });
+    }
+    if (id === admin.id && role !== "ADMIN") {
+      return NextResponse.json({ error: "לא ניתן להוריד את עצמך ממנהל" }, { status: 400 });
+    }
+    await prisma.user.update({ where: { id }, data: { role } });
+    return NextResponse.json({ ok: true });
+  }
+
+  // Update password
   if (!password || password.length < 4) {
     return NextResponse.json({ error: "סיסמה חייבת להיות לפחות 4 תווים" }, { status: 400 });
   }

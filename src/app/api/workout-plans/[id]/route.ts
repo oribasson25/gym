@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { z } from "zod";
 
 const updateExerciseSchema = z.object({
@@ -38,6 +39,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json({ error: "רק מנהל יכול לשנות תוכניות אימון" }, { status: 403 });
+    }
+
     const { id } = await params;
     const body = await req.json();
     const parsed = updatePlanSchema.safeParse(body);

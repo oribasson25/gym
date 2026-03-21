@@ -12,12 +12,14 @@ import { he } from "date-fns/locale";
 
 interface DashboardClientProps {
   userName: string;
+  userRole: string;
   lastByType: Record<WorkoutType, Date | null>;
   needsPhotoReminder: boolean;
 }
 
 export function DashboardClient({
   userName,
+  userRole,
   lastByType,
   needsPhotoReminder,
 }: DashboardClientProps) {
@@ -75,6 +77,7 @@ export function DashboardClient({
               <WorkoutTypeCard
                 info={wt}
                 lastSessionDate={lastByType[wt.type]}
+                isAdmin={userRole === "ADMIN"}
               />
             </motion.div>
           ))}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
+import { cn } from "@/lib/utils/cn";
 
 type UserRow = {
   id: string;
@@ -76,6 +77,16 @@ export function AdminClient() {
       setResetError(data.error ?? "שגיאה");
     }
     setResetting(false);
+  };
+
+  const toggleRole = async (id: string, currentRole: string) => {
+    const newRole = currentRole === "ADMIN" ? "USER" : "ADMIN";
+    const res = await fetch(`/api/admin/users/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: newRole }),
+    });
+    if (res.ok) load();
   };
 
   const deleteUser = async (id: string, name: string) => {
@@ -167,6 +178,17 @@ export function AdminClient() {
                       </div>
                     </div>
                     <div className="flex gap-2">
+                      <button
+                        onClick={() => toggleRole(u.id, u.role)}
+                        className={cn(
+                          "text-xs font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all",
+                          u.role === "ADMIN"
+                            ? "bg-primary-50 text-primary"
+                            : "bg-slate-100 text-slate-500"
+                        )}
+                      >
+                        {u.role === "ADMIN" ? "מנהל" : "מתאמן"}
+                      </button>
                       <button
                         onClick={() => { setResetId(u.id); setResetPassword(""); setResetError(null); }}
                         className="text-xs bg-amber-50 text-amber-600 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"

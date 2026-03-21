@@ -42,6 +42,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "משתמש לא נמצא" }, { status: 404 });
   }
 
+  if (user.role !== "ADMIN") {
+    return NextResponse.json({ error: "רק מנהל יכול לשנות תוכניות אימון" }, { status: 403 });
+  }
+
   const body = await req.json();
   const parsed = createPlanSchema.safeParse(body);
   if (!parsed.success) {
