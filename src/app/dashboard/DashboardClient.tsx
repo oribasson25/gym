@@ -33,8 +33,8 @@ export function DashboardClient({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-slate-400 text-sm">{today}</p>
-            <h1 className="text-2xl font-black text-slate-800">
+            <p className="text-slate-400 dark:text-slate-500 text-sm">{today}</p>
+            <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">
               שלום, {userName.split(" ")[0]} 👋
             </h1>
           </div>
@@ -42,16 +42,16 @@ export function DashboardClient({
             {needsPhotoReminder && (
               <button
                 onClick={() => setShowPhotoModal(true)}
-                className="relative w-10 h-10 rounded-2xl bg-danger-50 flex items-center
+                className="relative w-10 h-10 rounded-2xl bg-danger-50 dark:bg-danger-900/30 flex items-center
                            justify-center text-danger active:scale-90 transition-all"
               >
                 📷
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-danger rounded-full border-2 border-white" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-danger rounded-full border-2 border-white dark:border-slate-800" />
               </button>
             )}
             <Link
               href="/profile"
-              className="w-10 h-10 rounded-2xl bg-primary-50 flex items-center
+              className="w-10 h-10 rounded-2xl bg-primary-50 dark:bg-primary-900/30 flex items-center
                          justify-center text-primary font-bold text-lg active:scale-90 transition-all"
             >
               {userName.charAt(0).toUpperCase()}
@@ -61,8 +61,8 @@ export function DashboardClient({
 
         {/* Section title */}
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-slate-700">בחר סוג אימון</h2>
-          <p className="text-slate-400 text-sm">המשקל המוצע יתבסס על האימון הקודם</p>
+          <h2 className="text-lg font-bold text-slate-700 dark:text-slate-200">בחר סוג אימון</h2>
+          <p className="text-slate-400 dark:text-slate-500 text-sm">המשקל המוצע יתבסס על האימון הקודם</p>
         </div>
 
         {/* Workout type cards */}
@@ -100,16 +100,16 @@ export function DashboardClient({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: "100%", opacity: 0 }}
               transition={{ type: "spring", damping: 28, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl p-6 pb-8 shadow-2xl"
+              className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-800 rounded-t-3xl p-6 pb-8 shadow-2xl"
             >
-              <div className="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-5" />
+              <div className="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-5" />
 
               <div className="text-center space-y-3 mb-6">
                 <div className="text-5xl mb-2">📷</div>
-                <h3 className="text-xl font-black text-slate-800">
+                <h3 className="text-xl font-black text-slate-800 dark:text-slate-100">
                   זמן לתמונת תקדמות!
                 </h3>
-                <p className="text-slate-500 text-sm">
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
                   היום ה-1 לחודש — צלם תמונה לפני הארוחה הראשונה,
                   באותה תאורה כמו בחודש שעבר.
                 </p>

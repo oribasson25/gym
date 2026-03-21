@@ -78,12 +78,12 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
       <div className="max-w-2xl mx-auto px-4 pt-6 pb-4 space-y-5">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-black text-slate-800">היסטוריה</h1>
-          <p className="text-slate-400 text-sm">{sessions.length} אימונים מוקלטים</p>
+          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">היסטוריה</h1>
+          <p className="text-slate-400 dark:text-slate-500 text-sm">{sessions.length} אימונים מוקלטים</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 bg-slate-100 rounded-2xl p-1">
+        <div className="flex gap-2 bg-slate-100 dark:bg-slate-800 rounded-2xl p-1">
           {TABS.map((tab, i) => (
             <button
               key={tab}
@@ -91,8 +91,8 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
               className={cn(
                 "flex-1 py-2 rounded-xl text-sm font-semibold transition-all duration-150",
                 activeTab === i
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "text-slate-400 hover:text-slate-600"
+                  ? "bg-white text-slate-800 shadow-sm dark:bg-slate-700 dark:text-slate-100"
+                  : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
               )}
             >
               {tab}
@@ -124,12 +124,12 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
                     <div className="flex items-center gap-3">
                       <WorkoutTypeBadge type={session.workoutType} />
                       <div>
-                        <p className="font-semibold text-slate-800 text-sm">
+                        <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm">
                           {format(new Date(session.completedAt), "d בMMM yyyy", {
                             locale: he,
                           })}
                         </p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-slate-400 dark:text-slate-500">
                           {session.exercises.length} תרגילים
                           {session.difficultyRating && (
                             <span className="mr-2">
@@ -141,7 +141,7 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
                     </div>
                     <span
                       className={cn(
-                        "text-slate-400 transition-transform duration-200",
+                        "text-slate-400 dark:text-slate-500 transition-transform duration-200",
                         expandedSession === session.id && "rotate-180"
                       )}
                     >
@@ -150,15 +150,15 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
                   </div>
 
                   {expandedSession === session.id && (
-                    <div className="mt-4 space-y-2 border-t border-slate-100 pt-3">
+                    <div className="mt-4 space-y-2 border-t border-slate-100 dark:border-slate-700 pt-3">
                       {session.exercises.map((ex) => (
                         <div
                           key={ex.id}
                           className="flex items-center justify-between text-sm"
                         >
                           <div>
-                            <p className="font-medium text-slate-700">{ex.exercise.name}</p>
-                            <p className="text-xs text-slate-400">
+                            <p className="font-medium text-slate-700 dark:text-slate-200">{ex.exercise.name}</p>
+                            <p className="text-xs text-slate-400 dark:text-slate-500">
                               {ex.sets}×{ex.reps} · {ex.weightUsedKg} ק״ג
                             </p>
                           </div>
@@ -180,8 +180,8 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
             <select
               value={selectedExerciseId}
               onChange={(e) => setSelectedExerciseId(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3
-                         text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary/30
+              className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-2xl px-4 py-3
+                         text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/30
                          focus:border-primary transition-all"
             >
               {exercises.map((ex) => (
@@ -192,15 +192,15 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
             </select>
 
             <Card>
-              <h3 className="font-bold text-slate-800 mb-1">
+              <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-1">
                 {selectedExercise?.name}
               </h3>
-              <p className="text-slate-400 text-sm mb-4">
+              <p className="text-slate-400 dark:text-slate-500 text-sm mb-4">
                 התקדמות משקל (ק״ג)
               </p>
 
               {chartData.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
+                <div className="text-center py-8 text-slate-400 dark:text-slate-500">
                   <p>אין נתונים לתרגיל זה</p>
                 </div>
               ) : (

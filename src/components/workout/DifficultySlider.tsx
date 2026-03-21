@@ -39,7 +39,7 @@ export function DifficultySlider({ value, onChange }: DifficultySliderProps) {
                 "transition-all duration-150 active:scale-90 select-none",
                 isSelected
                   ? cn(bg, "text-white shadow-lg scale-105")
-                  : "bg-slate-100 text-slate-400 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
               )}
             >
               {rating}

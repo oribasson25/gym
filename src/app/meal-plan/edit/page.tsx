@@ -206,31 +206,31 @@ function MealPlanEditor() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 active:scale-90 transition-all"
+            className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 active:scale-90 transition-all"
           >
             ←
           </button>
           <div>
-            <h1 className="text-lg font-black text-slate-800">תפריט תזונה</h1>
-            <p className="text-slate-400 text-xs">{decodeURIComponent(userName)}</p>
+            <h1 className="text-lg font-black text-slate-800 dark:text-slate-100">תפריט תזונה</h1>
+            <p className="text-slate-400 dark:text-slate-500 text-xs">{decodeURIComponent(userName)}</p>
           </div>
         </div>
 
         {/* User stats & goal */}
-        <div className="bg-white rounded-3xl p-4 shadow-card border border-slate-100 space-y-3">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-4 shadow-card border border-slate-100 dark:border-slate-700 space-y-3">
           {userData && (
             <div className="flex gap-3 text-center">
-              <div className="flex-1 bg-slate-50 rounded-2xl p-2">
-                <p className="text-sm font-bold text-slate-700">{userData.weightKg} ק"ג</p>
-                <p className="text-[10px] text-slate-400">משקל</p>
+              <div className="flex-1 bg-slate-50 dark:bg-slate-700 rounded-2xl p-2">
+                <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{userData.weightKg} ק"ג</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">משקל</p>
               </div>
-              <div className="flex-1 bg-slate-50 rounded-2xl p-2">
-                <p className="text-sm font-bold text-slate-700">{userData.heightCm} ס"מ</p>
-                <p className="text-[10px] text-slate-400">גובה</p>
+              <div className="flex-1 bg-slate-50 dark:bg-slate-700 rounded-2xl p-2">
+                <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{userData.heightCm} ס"מ</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">גובה</p>
               </div>
-              <div className="flex-1 bg-slate-50 rounded-2xl p-2">
-                <p className="text-sm font-bold text-slate-700">{tdee}</p>
-                <p className="text-[10px] text-slate-400">TDEE</p>
+              <div className="flex-1 bg-slate-50 dark:bg-slate-700 rounded-2xl p-2">
+                <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{tdee}</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">TDEE</p>
               </div>
             </div>
           )}
@@ -245,7 +245,7 @@ function MealPlanEditor() {
                     ? g === "BULK"
                       ? "bg-green-500 text-white"
                       : "bg-red-500 text-white"
-                    : "bg-slate-100 text-slate-500"
+                    : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
                 }`}
               >
                 {NUTRITION_GOAL_LABELS[g]}
@@ -254,30 +254,30 @@ function MealPlanEditor() {
           </div>
 
           <div className="text-center space-y-1">
-            <p className="text-xs text-slate-400">יעד קלוריות</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">יעד קלוריות</p>
             <input
               type="number"
               value={targetCalories}
               onChange={(e) => setTargetCalories(Math.max(0, Number(e.target.value)))}
-              className="w-32 text-center text-2xl font-black text-primary bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-32 text-center text-2xl font-black text-primary bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-400 dark:text-slate-500">
               TDEE: {tdee}
             </p>
           </div>
         </div>
 
         {/* Current total */}
-        <div className="bg-white rounded-3xl p-3 shadow-card border border-slate-100 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-3 shadow-card border border-slate-100 dark:border-slate-700 flex items-center justify-between">
           <div className="text-sm">
-            <span className="font-bold text-slate-700">סה"כ: </span>
+            <span className="font-bold text-slate-700 dark:text-slate-200">סה"כ: </span>
             <span className={`font-black ${totalCals > targetCalories ? "text-red-500" : "text-green-600"}`}>
               {totalCals}
             </span>
-            <span className="text-slate-400"> / {targetCalories} kcal</span>
+            <span className="text-slate-400 dark:text-slate-500"> / {targetCalories} kcal</span>
           </div>
           <div className="text-sm">
-            <span className="font-bold text-slate-700">חלבון: </span>
+            <span className="font-bold text-slate-700 dark:text-slate-200">חלבון: </span>
             <span className="font-black text-blue-600">{totalProtein}g</span>
           </div>
         </div>
@@ -289,15 +289,15 @@ function MealPlanEditor() {
             0
           );
           return (
-            <div key={mealIdx} className="bg-white rounded-3xl p-4 shadow-card border border-slate-100 space-y-3">
+            <div key={mealIdx} className="bg-white dark:bg-slate-800 rounded-3xl p-4 shadow-card border border-slate-100 dark:border-slate-700 space-y-3">
               <div className="flex items-center justify-between">
                 <input
                   value={meal.name}
                   onChange={(e) => updateMealName(mealIdx, e.target.value)}
-                  className="font-bold text-slate-800 text-sm bg-transparent border-none focus:outline-none text-right flex-1"
+                  className="font-bold text-slate-800 dark:text-slate-100 text-sm bg-transparent border-none focus:outline-none text-right flex-1"
                 />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">{mealCals} kcal</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">{mealCals} kcal</span>
                   <button
                     onClick={() => removeMeal(mealIdx)}
                     className="text-xs text-red-400 active:scale-90 transition-all"
@@ -309,24 +309,24 @@ function MealPlanEditor() {
 
               {/* Foods in this meal */}
               {meal.foods.map((mf) => (
-                <div key={mf.foodId} className="flex items-center gap-2 bg-slate-50 rounded-xl p-2">
+                <div key={mf.foodId} className="flex items-center gap-2 bg-slate-50 dark:bg-slate-700 rounded-xl p-2">
                   <button
                     onClick={() => removeFoodFromMeal(mealIdx, mf.foodId)}
                     className="text-red-400 text-xs active:scale-90"
                   >
                     ✕
                   </button>
-                  <span className="flex-1 text-sm text-slate-700 text-right">{mf.food?.nameHe ?? mf.foodId}</span>
+                  <span className="flex-1 text-sm text-slate-700 dark:text-slate-200 text-right">{mf.food?.nameHe ?? mf.foodId}</span>
                   <div className="flex items-center gap-1">
                     <input
                       type="number"
                       value={mf.amountGrams}
                       onChange={(e) => updateFoodAmount(mealIdx, mf.foodId, Math.max(1, Number(e.target.value)))}
-                      className="w-16 text-center bg-white border border-slate-200 rounded-lg px-2 py-1 text-sm"
+                      className="w-16 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-2 py-1 text-sm"
                     />
-                    <span className="text-xs text-slate-400">g</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">g</span>
                   </div>
-                  <span className="text-xs text-slate-500 font-semibold w-14 text-left">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold w-14 text-left">
                     {Math.round(((mf.food?.caloriesPer100g ?? 0) * mf.amountGrams) / 100)}
                   </span>
                 </div>
@@ -335,7 +335,7 @@ function MealPlanEditor() {
               {/* Add food button */}
               <button
                 onClick={() => { setPickerMealIdx(mealIdx); setSearchQuery(""); setSelectedCategory("ALL"); }}
-                className="w-full py-2 border-2 border-dashed border-slate-200 rounded-2xl text-sm text-slate-400 font-semibold active:scale-[0.98] transition-all"
+                className="w-full py-2 border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-2xl text-sm text-slate-400 dark:text-slate-500 font-semibold active:scale-[0.98] transition-all"
               >
                 + הוסף מזון
               </button>
@@ -346,7 +346,7 @@ function MealPlanEditor() {
         {/* Add meal button */}
         <button
           onClick={addMeal}
-          className="w-full py-3 bg-slate-100 rounded-2xl text-sm font-bold text-slate-500 active:scale-[0.98] transition-all"
+          className="w-full py-3 bg-slate-100 dark:bg-slate-700 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 active:scale-[0.98] transition-all"
         >
           + הוסף ארוחה
         </button>
@@ -364,13 +364,13 @@ function MealPlanEditor() {
       {/* Food picker modal */}
       {pickerMealIdx !== null && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-end">
-          <div className="bg-white w-full rounded-t-3xl max-h-[80vh] flex flex-col">
-            <div className="p-4 border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-900 w-full rounded-t-3xl max-h-[80vh] flex flex-col">
+            <div className="p-4 border-b border-slate-100 dark:border-slate-700">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-slate-800">בחר מזון</h3>
+                <h3 className="font-bold text-slate-800 dark:text-slate-100">בחר מזון</h3>
                 <button
                   onClick={() => setPickerMealIdx(null)}
-                  className="text-slate-400 text-lg active:scale-90"
+                  className="text-slate-400 dark:text-slate-500 text-lg active:scale-90"
                 >
                   ✕
                 </button>
@@ -381,15 +381,15 @@ function MealPlanEditor() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="חפש מזון..."
                 autoFocus
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-right
-                           placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm text-right
+                           placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
               {/* Category filter */}
               <div className="flex gap-1 mt-2 overflow-x-auto pb-1">
                 <button
                   onClick={() => setSelectedCategory("ALL")}
                   className={`text-xs px-3 py-1 rounded-full whitespace-nowrap ${
-                    selectedCategory === "ALL" ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
+                    selectedCategory === "ALL" ? "bg-primary text-white" : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
                   }`}
                 >
                   הכל
@@ -399,7 +399,7 @@ function MealPlanEditor() {
                     key={key}
                     onClick={() => setSelectedCategory(key)}
                     className={`text-xs px-3 py-1 rounded-full whitespace-nowrap ${
-                      selectedCategory === key ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
+                      selectedCategory === key ? "bg-primary text-white" : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
                     }`}
                   >
                     {label}
@@ -412,20 +412,20 @@ function MealPlanEditor() {
                 <button
                   key={food.id}
                   onClick={() => addFoodToMeal(pickerMealIdx, food)}
-                  className="w-full flex items-center justify-between py-2 px-3 rounded-xl hover:bg-slate-50 active:bg-slate-100 transition-all"
+                  className="w-full flex items-center justify-between py-2 px-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 active:bg-slate-100 dark:active:bg-slate-700 transition-all"
                 >
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-slate-700">{food.nameHe}</p>
-                    <p className="text-xs text-slate-400">{food.name}</p>
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{food.nameHe}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">{food.name}</p>
                   </div>
-                  <div className="text-left text-xs text-slate-400">
-                    <p className="font-semibold text-slate-600">{food.caloriesPer100g} kcal</p>
+                  <div className="text-left text-xs text-slate-400 dark:text-slate-500">
+                    <p className="font-semibold text-slate-600 dark:text-slate-300">{food.caloriesPer100g} kcal</p>
                     <p>ח:{food.proteinPer100g} פ:{food.carbsPer100g} ש:{food.fatPer100g}</p>
                   </div>
                 </button>
               ))}
               {filteredFoods.length === 0 && (
-                <p className="text-center text-slate-400 text-sm py-8">לא נמצאו תוצאות</p>
+                <p className="text-center text-slate-400 dark:text-slate-500 text-sm py-8">לא נמצאו תוצאות</p>
               )}
             </div>
           </div>

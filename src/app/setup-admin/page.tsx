@@ -37,33 +37,33 @@ export default function SetupAdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-slate-50 flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
           <div className="w-16 h-16 bg-primary rounded-3xl flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-lg shadow-primary/30">
             💪
           </div>
-          <h1 className="text-2xl font-black text-slate-800">הגדרת מנהל</h1>
-          <p className="text-slate-500 text-sm mt-1">יצירת חשבון מנהל ראשי</p>
+          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">הגדרת מנהל</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">יצירת חשבון מנהל ראשי</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 shadow-card border border-slate-100 space-y-4">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-card border border-slate-100 dark:border-slate-700 space-y-4">
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-slate-600">שם מנהל</label>
+            <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">שם מנהל</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="הכנס שם"
               required
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3
-                         text-slate-800 placeholder-slate-400 focus:outline-none
+              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl px-4 py-3
+                         text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none
                          focus:ring-2 focus:ring-primary/30 focus:border-primary text-right"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-slate-600">סיסמה</label>
+            <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">סיסמה</label>
             <input
               type="password"
               value={password}
@@ -71,22 +71,22 @@ export default function SetupAdminPage() {
               placeholder="לפחות 4 תווים"
               required
               minLength={4}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3
-                         text-slate-800 placeholder-slate-400 focus:outline-none
+              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl px-4 py-3
+                         text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none
                          focus:ring-2 focus:ring-primary/30 focus:border-primary text-right"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-slate-600">אימות סיסמה</label>
+            <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">אימות סיסמה</label>
             <input
               type="password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="הכנס סיסמה שוב"
               required
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3
-                         text-slate-800 placeholder-slate-400 focus:outline-none
+              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl px-4 py-3
+                         text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none
                          focus:ring-2 focus:ring-primary/30 focus:border-primary text-right"
             />
           </div>

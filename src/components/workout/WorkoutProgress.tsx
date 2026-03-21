@@ -10,7 +10,7 @@ interface WorkoutProgressProps {
 }
 
 const statusColor: Record<ExerciseStatus, string> = {
-  PENDING: "bg-slate-200",
+  PENDING: "bg-slate-200 dark:bg-slate-600",
   SUCCESS: "bg-success",
   PARTIAL: "bg-warning",
   FAIL: "bg-danger",
@@ -40,7 +40,7 @@ export function WorkoutProgress({
                   ? statusColor[status]
                   : i === current
                   ? "bg-primary"
-                  : "bg-slate-200"
+                  : "bg-slate-200 dark:bg-slate-600"
               )}
             />
           );

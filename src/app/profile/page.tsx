@@ -6,6 +6,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input, NumberInput } from "@/components/ui/Input";
+import { useTheme } from "@/components/ThemeProvider";
 import Image from "next/image";
 
 type UserData = {
@@ -19,6 +20,7 @@ type UserData = {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
   const [user, setUser] = useState<UserData | null>(null);
   const [form, setForm] = useState<UserData>({
     name: "",
@@ -64,7 +66,7 @@ export default function ProfilePage() {
   return (
     <AppShell userName={user?.name}>
       <div className="max-w-lg mx-auto px-4 pt-6 pb-4 space-y-5">
-        <h1 className="text-2xl font-black text-slate-800">פרופיל</h1>
+        <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">פרופיל</h1>
 
         {/* Avatar */}
         <Card className="flex flex-col items-center gap-4 text-center">
@@ -78,7 +80,7 @@ export default function ProfilePage() {
             )}
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-800">{user?.name}</h2>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">{user?.name}</h2>
             {bmi && (
               <p className="text-slate-400 text-sm">
                 BMI: {bmi} · {user?.heightCm} ס״מ · {user?.weightKg} ק״ג
@@ -89,7 +91,7 @@ export default function ProfilePage() {
 
         {/* Edit form */}
         <Card className="space-y-4">
-          <h3 className="font-bold text-slate-700">עדכון פרטים</h3>
+          <h3 className="font-bold text-slate-700 dark:text-slate-200">עדכון פרטים</h3>
 
           <Input
             label="שם"
@@ -140,11 +142,28 @@ export default function ProfilePage() {
         {user?.role === "ADMIN" && (
           <button
             onClick={() => router.push("/admin")}
-            className="w-full py-3 bg-indigo-50 text-primary text-sm font-semibold rounded-2xl active:scale-95 transition-all"
+            className="w-full py-3 bg-indigo-50 dark:bg-indigo-950 text-primary text-sm font-semibold rounded-2xl active:scale-95 transition-all"
           >
             ניהול משתמשים
           </button>
         )}
+
+        {/* Dark mode toggle */}
+        <button
+          onClick={toggleTheme}
+          className="w-full py-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl flex items-center justify-between px-5 active:scale-[0.98] transition-all"
+        >
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+            {theme === "dark" ? "מצב כהה" : "מצב בהיר"}
+          </span>
+          <div className="relative w-12 h-7 rounded-full bg-slate-200 dark:bg-primary transition-colors">
+            <div
+              className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow-md transition-all ${
+                theme === "dark" ? "right-0.5" : "right-[22px]"
+              }`}
+            />
+          </div>
+        </button>
 
         {/* Logout */}
         <button

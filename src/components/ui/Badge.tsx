@@ -10,12 +10,12 @@ type BadgeVariant =
   | "ghost";
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: "bg-slate-100 text-slate-600",
-  primary: "bg-primary-50 text-primary-700",
-  success: "bg-green-50 text-green-700",
-  warning: "bg-amber-50 text-amber-700",
-  danger: "bg-red-50 text-red-700",
-  ghost: "bg-white text-slate-500 border border-slate-200",
+  default: "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
+  primary: "bg-primary-50 text-primary-700 dark:bg-primary-700/20 dark:text-primary-100",
+  success: "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  warning: "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  danger: "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+  ghost: "bg-white text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600",
 };
 
 export function Badge({

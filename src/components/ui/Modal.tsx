@@ -54,7 +54,7 @@ export function Modal({
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className={cn(
               "fixed bottom-0 left-0 right-0 z-50",
-              "bg-white rounded-t-3xl shadow-2xl",
+              "bg-white dark:bg-slate-800 rounded-t-3xl shadow-2xl",
               "max-h-[90vh] overflow-y-auto",
               "safe-bottom",
               className
@@ -62,20 +62,20 @@ export function Modal({
           >
             {/* Handle */}
             <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 bg-slate-200 rounded-full" />
+              <div className="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full" />
             </div>
 
             {/* Header */}
             {(title || closable) && (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
                 {title && (
-                  <h2 className="text-lg font-bold text-slate-800">{title}</h2>
+                  <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{title}</h2>
                 )}
                 {closable && onClose && (
                   <button
                     onClick={onClose}
-                    className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center
-                               text-slate-500 hover:bg-slate-200 transition-colors active:scale-90"
+                    className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center
+                               text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors active:scale-90"
                   >
                     ✕
                   </button>

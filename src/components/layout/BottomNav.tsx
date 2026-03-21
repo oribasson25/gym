@@ -113,7 +113,7 @@ export function BottomNav() {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-slate-100
-                    safe-bottom"
+                    dark:bg-slate-800 dark:border-slate-700 safe-bottom"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="flex items-center justify-around px-2 py-2">

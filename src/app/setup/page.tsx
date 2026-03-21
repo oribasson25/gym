@@ -190,15 +190,15 @@ export default function SetupPage() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
       <div className="max-w-lg mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary rounded-3xl flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-lg shadow-primary/30">
             💪
           </div>
-          <h1 className="text-2xl font-black text-slate-800">Gym Tracker</h1>
-          <p className="text-slate-500 text-sm mt-1">הגדרה ראשונית</p>
+          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">Gym Tracker</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">הגדרה ראשונית</p>
         </div>
 
         {/* Step indicator */}
@@ -208,7 +208,7 @@ export default function SetupPage() {
               <div
                 className={cn(
                   "w-full h-1.5 rounded-full transition-all duration-300",
-                  i <= step ? "bg-primary" : "bg-slate-200"
+                  i <= step ? "bg-primary" : "bg-slate-200 dark:bg-slate-600"
                 )}
               />
               <span
@@ -217,8 +217,8 @@ export default function SetupPage() {
                   i === step
                     ? "text-primary"
                     : i < step
-                    ? "text-slate-500"
-                    : "text-slate-300"
+                    ? "text-slate-500 dark:text-slate-400"
+                    : "text-slate-300 dark:text-slate-600"
                 )}
               >
                 {label}
@@ -239,8 +239,8 @@ export default function SetupPage() {
             >
               <Card className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800">פרטים אישיים</h2>
-                  <p className="text-slate-500 text-sm mt-1">
+                  <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">פרטים אישיים</h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
                     הנתונים האלה יעזרו לעקוב אחר ההתקדמות שלך
                   </p>
                 </div>
@@ -302,8 +302,8 @@ export default function SetupPage() {
             >
               <Card className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800">תמונת פרופיל</h2>
-                  <p className="text-slate-500 text-sm mt-1">אופציונלי — ניתן לדלג</p>
+                  <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">תמונת פרופיל</h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">אופציונלי — ניתן לדלג</p>
                 </div>
 
                 <input
@@ -322,8 +322,8 @@ export default function SetupPage() {
                     "flex flex-col items-center justify-center gap-3",
                     "transition-all duration-150 active:scale-[0.98]",
                     form.photoPreview
-                      ? "border-primary bg-primary-50"
-                      : "border-slate-200 bg-slate-50 hover:border-primary hover:bg-primary-50"
+                      ? "border-primary bg-primary-50 dark:bg-primary-900/30"
+                      : "border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-900/30"
                   )}
                 >
                   {form.photoPreview ? (
@@ -337,10 +337,10 @@ export default function SetupPage() {
                     </div>
                   ) : (
                     <>
-                      <div className="w-16 h-16 bg-slate-200 rounded-2xl flex items-center justify-center text-3xl">
+                      <div className="w-16 h-16 bg-slate-200 dark:bg-slate-600 rounded-2xl flex items-center justify-center text-3xl">
                         📷
                       </div>
-                      <p className="text-slate-500 text-sm font-medium">
+                      <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
                         לחץ לבחירת תמונה
                       </p>
                     </>
@@ -370,10 +370,10 @@ export default function SetupPage() {
               className="space-y-4"
             >
               <Card padding="sm">
-                <h2 className="text-xl font-bold text-slate-800 mb-1">
+                <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">
                   תוכנית אימונים
                 </h2>
-                <p className="text-slate-500 text-sm">
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
                   הוסף תרגילים לכל סוג אימון
                 </p>
               </Card>
@@ -389,7 +389,7 @@ export default function SetupPage() {
                       "transition-all duration-150 active:scale-95",
                       activePlanIndex === i
                         ? "text-white shadow-md"
-                        : "bg-white text-slate-500 border border-slate-200"
+                        : "bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600"
                     )}
                     style={
                       activePlanIndex === i
@@ -415,20 +415,20 @@ export default function SetupPage() {
               {/* Active plan exercises */}
               <Card padding="sm" className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-slate-600">
+                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
                     {activeWorkoutInfo.labelHe} — {activePlan.exercises.length} תרגילים
                   </p>
                   <button
                     onClick={() => setShowExercisePicker(true)}
                     className="flex items-center gap-1 text-sm text-primary font-semibold
-                               bg-primary-50 px-3 py-1.5 rounded-xl active:scale-95 transition-all"
+                               bg-primary-50 dark:bg-primary-900/30 px-3 py-1.5 rounded-xl active:scale-95 transition-all"
                   >
                     + הוסף
                   </button>
                 </div>
 
                 {activePlan.exercises.length === 0 ? (
-                  <div className="text-center py-6 text-slate-400">
+                  <div className="text-center py-6 text-slate-400 dark:text-slate-500">
                     <p className="text-3xl mb-2">➕</p>
                     <p className="text-sm">לחץ על "הוסף" כדי להוסיף תרגילים</p>
                   </div>
@@ -437,73 +437,73 @@ export default function SetupPage() {
                     {activePlan.exercises.map((ex) => (
                       <div
                         key={ex.exerciseId}
-                        className="bg-slate-50 rounded-2xl p-3 space-y-2"
+                        className="bg-slate-50 dark:bg-slate-700 rounded-2xl p-3 space-y-2"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-semibold text-slate-800 text-sm">
+                            <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm">
                               {ex.name}
                             </p>
-                            <p className="text-slate-400 text-xs">{ex.nameHe}</p>
+                            <p className="text-slate-400 dark:text-slate-500 text-xs">{ex.nameHe}</p>
                           </div>
                           <button
                             onClick={() => removeExercise(ex.exerciseId)}
                             className="text-red-400 hover:text-red-600 w-7 h-7 flex items-center
-                                       justify-center rounded-lg hover:bg-red-50 transition-colors"
+                                       justify-center rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                           >
                             ✕
                           </button>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                           <div>
-                            <label className="text-xs text-slate-400 block mb-1">סטים</label>
+                            <label className="text-xs text-slate-400 dark:text-slate-500 block mb-1">סטים</label>
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => updateExercise(ex.exerciseId, "sets", Math.max(1, ex.sets - 1))}
-                                className="w-7 h-7 bg-white rounded-lg border border-slate-200 text-sm font-bold active:scale-90"
+                                className="w-7 h-7 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-bold active:scale-90"
                               >
                                 −
                               </button>
                               <span className="flex-1 text-center font-bold text-sm">{ex.sets}</span>
                               <button
                                 onClick={() => updateExercise(ex.exerciseId, "sets", ex.sets + 1)}
-                                className="w-7 h-7 bg-white rounded-lg border border-slate-200 text-sm font-bold active:scale-90"
+                                className="w-7 h-7 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-bold active:scale-90"
                               >
                                 +
                               </button>
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs text-slate-400 block mb-1">חזרות</label>
+                            <label className="text-xs text-slate-400 dark:text-slate-500 block mb-1">חזרות</label>
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => updateExercise(ex.exerciseId, "reps", Math.max(1, ex.reps - 1))}
-                                className="w-7 h-7 bg-white rounded-lg border border-slate-200 text-sm font-bold active:scale-90"
+                                className="w-7 h-7 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-bold active:scale-90"
                               >
                                 −
                               </button>
                               <span className="flex-1 text-center font-bold text-sm">{ex.reps}</span>
                               <button
                                 onClick={() => updateExercise(ex.exerciseId, "reps", ex.reps + 1)}
-                                className="w-7 h-7 bg-white rounded-lg border border-slate-200 text-sm font-bold active:scale-90"
+                                className="w-7 h-7 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-bold active:scale-90"
                               >
                                 +
                               </button>
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs text-slate-400 block mb-1">משקל</label>
+                            <label className="text-xs text-slate-400 dark:text-slate-500 block mb-1">משקל</label>
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => updateExercise(ex.exerciseId, "targetWeightKg", Math.max(0, ex.targetWeightKg - 2.5))}
-                                className="w-7 h-7 bg-white rounded-lg border border-slate-200 text-sm font-bold active:scale-90"
+                                className="w-7 h-7 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-bold active:scale-90"
                               >
                                 −
                               </button>
                               <span className="flex-1 text-center font-bold text-xs">{ex.targetWeightKg}kg</span>
                               <button
                                 onClick={() => updateExercise(ex.exerciseId, "targetWeightKg", ex.targetWeightKg + 2.5)}
-                                className="w-7 h-7 bg-white rounded-lg border border-slate-200 text-sm font-bold active:scale-90"
+                                className="w-7 h-7 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-bold active:scale-90"
                               >
                                 +
                               </button>
@@ -539,31 +539,31 @@ export default function SetupPage() {
 
       {/* Exercise Picker Modal */}
       {showExercisePicker && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white">
+        <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-slate-900">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-slate-100">
+          <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-700">
             <div>
-              <h3 className="font-bold text-slate-800">הוסף תרגיל</h3>
-              <p className="text-xs text-slate-400">{activeWorkoutInfo.labelHe}</p>
+              <h3 className="font-bold text-slate-800 dark:text-slate-100">הוסף תרגיל</h3>
+              <p className="text-xs text-slate-400 dark:text-slate-500">{activeWorkoutInfo.labelHe}</p>
             </div>
             <button
               onClick={() => setShowExercisePicker(false)}
-              className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center
-                         text-slate-500 active:scale-90 transition-all"
+              className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center
+                         text-slate-500 dark:text-slate-400 active:scale-90 transition-all"
             >
               ✕
             </button>
           </div>
 
           {/* Search */}
-          <div className="p-4 border-b border-slate-100">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-700">
             <input
               type="text"
               placeholder="חיפוש תרגיל..."
               value={exerciseSearch}
               onChange={(e) => setExerciseSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3
-                         text-slate-800 placeholder-slate-400 focus:outline-none
+              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-2xl px-4 py-3
+                         text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none
                          focus:ring-2 focus:ring-primary/30 focus:border-primary"
             />
           </div>
@@ -581,7 +581,7 @@ export default function SetupPage() {
 
               return (
                 <div key={group}>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
                     {MUSCLE_GROUP_LABELS[group]}
                   </p>
                   <div className="space-y-2">
@@ -600,14 +600,14 @@ export default function SetupPage() {
                           className={cn(
                             "w-full text-right p-3 rounded-2xl border transition-all active:scale-[0.98]",
                             added
-                              ? "bg-primary-50 border-primary/20 text-primary opacity-60"
-                              : "bg-white border-slate-200 hover:border-primary hover:bg-primary-50"
+                              ? "bg-primary-50 dark:bg-primary-900/30 border-primary/20 text-primary opacity-60"
+                              : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-900/30"
                           )}
                         >
-                          <p className="font-semibold text-sm text-slate-800">
+                          <p className="font-semibold text-sm text-slate-800 dark:text-slate-100">
                             {ex.name}
                           </p>
-                          <p className="text-xs text-slate-400">{ex.nameHe}</p>
+                          <p className="text-xs text-slate-400 dark:text-slate-500">{ex.nameHe}</p>
                           {added && (
                             <span className="text-xs text-primary font-medium">✓ כבר נוסף</span>
                           )}
@@ -620,7 +620,7 @@ export default function SetupPage() {
             })}
 
             {allRelevantExercises.length === 0 && (
-              <p className="text-center text-slate-400 py-8">לא נמצאו תרגילים</p>
+              <p className="text-center text-slate-400 dark:text-slate-500 py-8">לא נמצאו תרגילים</p>
             )}
           </div>
         </div>

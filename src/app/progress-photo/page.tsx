@@ -84,7 +84,7 @@ export default function ProgressPhotoPage() {
       <div className="max-w-2xl mx-auto px-4 pt-6 pb-4 space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-black text-slate-800">תמונות תקדמות</h1>
+          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">תמונות תקדמות</h1>
           <p className="text-slate-400 text-sm">{currentMonth}</p>
         </div>
 
@@ -92,7 +92,7 @@ export default function ProgressPhotoPage() {
         {!alreadyUploaded || saved ? (
           <Card className="space-y-5">
             <div>
-              <h2 className="text-lg font-bold text-slate-800">
+              <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                 {saved ? "✓ תמונה הועלתה!" : "העלה תמונת חודש"}
               </h2>
               <p className="text-slate-400 text-sm mt-1">
@@ -118,7 +118,7 @@ export default function ProgressPhotoPage() {
                     "transition-all duration-150 active:scale-[0.98]",
                     preview
                       ? "border-primary"
-                      : "border-slate-200 hover:border-primary hover:bg-primary-50"
+                      : "border-slate-200 dark:border-slate-600 hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-900/20"
                   )}
                 >
                   {preview ? (
@@ -128,7 +128,7 @@ export default function ProgressPhotoPage() {
                   ) : (
                     <>
                       <span className="text-4xl">📷</span>
-                      <p className="text-slate-500 text-sm font-medium">לחץ לבחירת תמונה</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">לחץ לבחירת תמונה</p>
                     </>
                   )}
                 </button>
@@ -155,7 +155,7 @@ export default function ProgressPhotoPage() {
             )}
           </Card>
         ) : (
-          <Card className="bg-primary-50 border-primary/20">
+          <Card className="bg-primary-50 dark:bg-primary-900/20 border-primary/20">
             <div className="flex items-center gap-3">
               <span className="text-3xl">✓</span>
               <div>
@@ -169,7 +169,7 @@ export default function ProgressPhotoPage() {
         {/* Photos grid */}
         {photos.length >= 2 && (
           <div>
-            <h3 className="text-lg font-bold text-slate-800 mb-3">השוואה</h3>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">השוואה</h3>
             <div className="grid grid-cols-2 gap-3">
               {[photos[1], photos[0]].map((photo, i) => (
                 <div key={photo.id} className="space-y-1">
@@ -177,7 +177,7 @@ export default function ProgressPhotoPage() {
                     {i === 0 ? "חודש שעבר" : "החודש"}
                     {photo.weightKg && ` · ${photo.weightKg} ק״ג`}
                   </p>
-                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100">
+                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-700">
                     <Image
                       src={photo.photoUrl}
                       alt={`Progress ${photo.monthYear}`}
@@ -194,11 +194,11 @@ export default function ProgressPhotoPage() {
         {/* All photos */}
         {photos.length > 0 && (
           <div>
-            <h3 className="text-lg font-bold text-slate-800 mb-3">כל התמונות</h3>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">כל התמונות</h3>
             <div className="grid grid-cols-3 gap-2">
               {photos.map((photo) => (
                 <div key={photo.id} className="space-y-1">
-                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100">
+                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-700">
                     <Image
                       src={photo.photoUrl}
                       alt={`Progress ${photo.monthYear}`}

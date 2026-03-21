@@ -65,7 +65,7 @@ export default function WorkoutPage() {
     return (
       <AppShell>
         <div className="flex items-center justify-center min-h-screen">
-          <p className="text-slate-500">סוג אימון לא נמצא</p>
+          <p className="text-slate-500 dark:text-slate-400">סוג אימון לא נמצא</p>
         </div>
       </AppShell>
     );
@@ -88,10 +88,10 @@ export default function WorkoutPage() {
               {workoutInfo.icon}
             </div>
             <div>
-              <h1 className="text-3xl font-black text-slate-800">
+              <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100">
                 {workoutInfo.labelHe}
               </h1>
-              <p className="text-slate-500 mt-1">{workoutInfo.description}</p>
+              <p className="text-slate-500 dark:text-slate-400 mt-1">{workoutInfo.description}</p>
             </div>
 
             {error && (
@@ -127,8 +127,8 @@ export default function WorkoutPage() {
         <div className="max-w-lg mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[80vh] gap-5">
           <div className="text-5xl">📋</div>
           <div className="text-center">
-            <h2 className="text-xl font-bold text-slate-800">אין תרגילים בתוכנית</h2>
-            <p className="text-slate-500 text-sm mt-1">הוסף תרגילים לתוכנית לפני תחילת האימון</p>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">אין תרגילים בתוכנית</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">הוסף תרגילים לתוכנית לפני תחילת האימון</p>
           </div>
           <Button onClick={() => router.push(`/plans/${slug}`)}>
             ערוך תוכנית
@@ -164,8 +164,8 @@ export default function WorkoutPage() {
                 router.push("/dashboard");
               }
             }}
-            className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center
-                       text-slate-400 active:scale-90 transition-all text-sm"
+            className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center
+                       text-slate-400 dark:text-slate-500 active:scale-90 transition-all text-sm"
           >
             ✕
           </button>
@@ -193,19 +193,19 @@ export default function WorkoutPage() {
               {/* Exercise info */}
               <div className="px-6 pb-6 space-y-4">
                 <div className="text-center">
-                  <h2 className="text-xl font-black text-slate-800">
+                  <h2 className="text-xl font-black text-slate-800 dark:text-slate-100">
                     {currentExercise.name}
                   </h2>
-                  <p className="text-slate-500 text-sm">{currentExercise.nameHe}</p>
-                  <p className="text-slate-400 text-sm mt-1">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">{currentExercise.nameHe}</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">
                     {currentExercise.sets} סטים × {currentExercise.reps} חזרות
                   </p>
                 </div>
 
                 {/* Weight selector */}
-                <div className="bg-slate-50 rounded-2xl p-4 space-y-2">
+                <div className="bg-slate-50 dark:bg-slate-700 rounded-2xl p-4 space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-slate-600">משקל לאימון</p>
+                    <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">משקל לאימון</p>
                     {currentExercise.suggestion && (
                       <SuggestionBadge
                         lastWeight={currentExercise.suggestion.lastWeight}
@@ -221,16 +221,16 @@ export default function WorkoutPage() {
                           Math.max(0, currentExercise.weightUsedKg - 2.5)
                         )
                       }
-                      className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center
-                                 justify-center text-slate-600 font-bold text-xl active:scale-90 transition-all"
+                      className="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center
+                                 justify-center text-slate-600 dark:text-slate-300 font-bold text-xl active:scale-90 transition-all"
                     >
                       −
                     </button>
                     <div className="flex-1 text-center">
-                      <span className="text-3xl font-black text-slate-800">
+                      <span className="text-3xl font-black text-slate-800 dark:text-slate-100">
                         {currentExercise.weightUsedKg}
                       </span>
-                      <span className="text-slate-400 text-base font-medium mr-1">ק״ג</span>
+                      <span className="text-slate-400 dark:text-slate-500 text-base font-medium mr-1">ק״ג</span>
                     </div>
                     <button
                       onClick={() =>
@@ -239,14 +239,14 @@ export default function WorkoutPage() {
                           currentExercise.weightUsedKg + 2.5
                         )
                       }
-                      className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center
-                                 justify-center text-slate-600 font-bold text-xl active:scale-90 transition-all"
+                      className="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center
+                                 justify-center text-slate-600 dark:text-slate-300 font-bold text-xl active:scale-90 transition-all"
                     >
                       +
                     </button>
                   </div>
                   {currentExercise.suggestion?.reasoning && (
-                    <p className="text-xs text-slate-400 text-center">
+                    <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
                       {currentExercise.suggestion.reasoning}
                     </p>
                   )}
@@ -254,7 +254,7 @@ export default function WorkoutPage() {
 
                 {/* Status buttons */}
                 <div>
-                  <p className="text-sm font-semibold text-slate-600 mb-2 text-center">
+                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2 text-center">
                     איך הלך התרגיל?
                   </p>
                   <StatusButtons
@@ -278,7 +278,7 @@ function SuggestionBadge({
   lastWeight: number | null;
   lastStatus: ExerciseStatus | null;
 }) {
-  if (!lastWeight) return <span className="text-xs text-slate-400">אימון ראשון</span>;
+  if (!lastWeight) return <span className="text-xs text-slate-400 dark:text-slate-500">אימון ראשון</span>;
 
   const statusIcon = lastStatus === "SUCCESS" ? "✓" : lastStatus === "PARTIAL" ? "~" : lastStatus === "FAIL" ? "✗" : "";
   const statusColor =

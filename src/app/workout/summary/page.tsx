@@ -49,8 +49,8 @@ function SummaryContent() {
           transition={{ delay: 0.3 }}
           className="text-center"
         >
-          <h2 className="text-2xl font-black text-slate-800">כל הכבוד!</h2>
-          <p className="text-slate-500">האימון נשמר בהצלחה</p>
+          <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100">כל הכבוד!</h2>
+          <p className="text-slate-500 dark:text-slate-400">האימון נשמר בהצלחה</p>
         </motion.div>
       </div>
     );
@@ -64,15 +64,15 @@ function SummaryContent() {
         className="text-center space-y-2"
       >
         <div className="text-6xl mb-4">💪</div>
-        <h1 className="text-2xl font-black text-slate-800">סיימת את האימון!</h1>
-        <p className="text-slate-500 text-sm">
+        <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">סיימת את האימון!</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm">
           דרג את רמת הקושי כדי שנוכל להתאים את האימון הבא
         </p>
       </motion.div>
 
       <Card className="space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-800 mb-1">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">
             רמת קושי
           </h2>
           <p className="text-slate-400 text-sm">1 = קל מאוד · 10 = מקסימלי</p>
@@ -84,7 +84,7 @@ function SummaryContent() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-slate-50 rounded-2xl p-4 text-center"
+          className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 text-center"
         >
           {rating < 7 ? (
             <p className="text-sm text-success font-semibold">

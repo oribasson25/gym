@@ -107,20 +107,20 @@ export function AdminClient() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center
-                       justify-center text-slate-500 active:scale-90 transition-all"
+            className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center
+                       justify-center text-slate-500 dark:text-slate-400 active:scale-90 transition-all"
           >
             ←
           </button>
           <div>
-            <h1 className="text-lg font-black text-slate-800">ניהול משתמשים</h1>
+            <h1 className="text-lg font-black text-slate-800 dark:text-slate-100">ניהול משתמשים</h1>
             <p className="text-slate-400 text-xs">הוספה, מחיקה ואיפוס סיסמאות</p>
           </div>
         </div>
 
         {/* Create user */}
-        <div className="bg-white rounded-3xl p-4 shadow-card border border-slate-100 space-y-3">
-          <h2 className="font-bold text-slate-700 text-sm">הוסף משתמש חדש</h2>
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-4 shadow-card border border-slate-100 dark:border-slate-700 space-y-3">
+          <h2 className="font-bold text-slate-700 dark:text-slate-200 text-sm">הוסף משתמש חדש</h2>
           <form onSubmit={createUser} className="space-y-3">
             <input
               type="text"
@@ -128,8 +128,8 @@ export function AdminClient() {
               onChange={(e) => setNewName(e.target.value)}
               placeholder="שם משתמש"
               required
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3
-                         text-slate-800 placeholder-slate-400 focus:outline-none
+              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl px-4 py-3
+                         text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none
                          focus:ring-2 focus:ring-primary/30 focus:border-primary text-right text-sm"
             />
             <input
@@ -139,8 +139,8 @@ export function AdminClient() {
               placeholder="סיסמה (לפחות 4 תווים)"
               required
               minLength={4}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3
-                         text-slate-800 placeholder-slate-400 focus:outline-none
+              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl px-4 py-3
+                         text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none
                          focus:ring-2 focus:ring-primary/30 focus:border-primary text-right text-sm"
             />
             {createError && (
@@ -158,8 +158,8 @@ export function AdminClient() {
         </div>
 
         {/* Users list */}
-        <div className="bg-white rounded-3xl p-4 shadow-card border border-slate-100 space-y-3">
-          <h2 className="font-bold text-slate-700 text-sm">משתמשים קיימים</h2>
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-4 shadow-card border border-slate-100 dark:border-slate-700 space-y-3">
+          <h2 className="font-bold text-slate-700 dark:text-slate-200 text-sm">משתמשים קיימים</h2>
           {loading ? (
             <div className="flex justify-center py-6">
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -167,7 +167,7 @@ export function AdminClient() {
           ) : (
             <div className="space-y-2">
               {users.map((u) => (
-                <div key={u.id} className="bg-slate-50 rounded-2xl p-3">
+                <div key={u.id} className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center
@@ -175,7 +175,7 @@ export function AdminClient() {
                         {u.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-800 text-sm">{u.name}</p>
+                        <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{u.name}</p>
                         <p className="text-xs text-slate-400">
                           {u.role === "ADMIN" ? "מנהל" : "משתמש"} ·{" "}
                           {u.hasPassword ? "יש סיסמה" : "אין סיסמה"}
@@ -188,22 +188,22 @@ export function AdminClient() {
                         className={cn(
                           "text-xs font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all",
                           u.role === "ADMIN"
-                            ? "bg-primary-50 text-primary"
-                            : "bg-slate-100 text-slate-500"
+                            ? "bg-primary-50 dark:bg-primary-900/30 text-primary"
+                            : "bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300"
                         )}
                       >
                         {u.role === "ADMIN" ? "מנהל" : "מתאמן"}
                       </button>
                       <button
                         onClick={() => { setResetId(u.id); setResetPassword(""); setResetError(null); }}
-                        className="text-xs bg-amber-50 text-amber-600 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
+                        className="text-xs bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
                       >
                         סיסמה
                       </button>
                       {u.role !== "ADMIN" && (
                         <button
                           onClick={() => deleteUser(u.id, u.name)}
-                          className="text-xs bg-red-50 text-red-500 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
+                          className="text-xs bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
                         >
                           מחק
                         </button>
@@ -215,13 +215,13 @@ export function AdminClient() {
                   <div className="mt-2 flex gap-2">
                     <button
                       onClick={() => setPlansUserId(plansUserId === u.id ? null : u.id)}
-                      className="text-xs bg-green-50 text-green-600 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
+                      className="text-xs bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
                     >
                       {plansUserId === u.id ? "סגור תוכניות" : "תוכניות אימון"}
                     </button>
                     <Link
                       href={`/meal-plan/edit?userId=${u.id}&userName=${encodeURIComponent(u.name)}`}
-                      className="text-xs bg-orange-50 text-orange-600 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
+                      className="text-xs bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
                     >
                       תפריט תזונה
                     </Link>
@@ -233,11 +233,11 @@ export function AdminClient() {
                         <Link
                           key={wt.type}
                           href={`/plans/${TYPE_TO_SLUG[wt.type]}?userId=${u.id}&userName=${encodeURIComponent(u.name)}`}
-                          className="flex items-center gap-2 p-2 rounded-xl border border-slate-200 bg-white
+                          className="flex items-center gap-2 p-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800
                                      active:scale-95 transition-all"
                         >
                           <span className="text-lg">{wt.icon}</span>
-                          <span className="text-xs font-semibold text-slate-700">{wt.labelHe}</span>
+                          <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{wt.labelHe}</span>
                         </Link>
                       ))}
                     </div>
@@ -254,8 +254,8 @@ export function AdminClient() {
                         required
                         minLength={4}
                         autoFocus
-                        className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2
-                                   text-slate-800 placeholder-slate-400 focus:outline-none
+                        className="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2
+                                   text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none
                                    focus:ring-2 focus:ring-primary/30 focus:border-primary text-right text-sm"
                       />
                       <button
@@ -269,7 +269,7 @@ export function AdminClient() {
                       <button
                         type="button"
                         onClick={() => setResetId(null)}
-                        className="bg-slate-100 text-slate-500 text-sm font-bold px-3 py-2 rounded-xl active:scale-90 transition-all"
+                        className="bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300 text-sm font-bold px-3 py-2 rounded-xl active:scale-90 transition-all"
                       >
                         ✕
                       </button>

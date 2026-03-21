@@ -93,10 +93,10 @@ export default function MealPlanPage() {
     return (
       <AppShell>
         <div className="px-4 pt-5 text-center">
-          <div className="bg-white rounded-3xl p-8 shadow-card border border-slate-100">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-card border border-slate-100 dark:border-slate-700">
             <div className="text-4xl mb-3">🍽️</div>
-            <h2 className="text-lg font-bold text-slate-800 mb-2">אין תפריט תזונה</h2>
-            <p className="text-slate-500 text-sm">המנהל טרם יצר לך תפריט תזונה</p>
+            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">אין תפריט תזונה</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">המנהל טרם יצר לך תפריט תזונה</p>
           </div>
         </div>
       </AppShell>
@@ -127,41 +127,41 @@ export default function MealPlanPage() {
       <div className="px-4 pt-5 pb-4 space-y-4">
         {/* Header */}
         <div>
-          <h1 className="text-lg font-black text-slate-800">תפריט תזונה</h1>
-          <p className="text-slate-400 text-xs">
+          <h1 className="text-lg font-black text-slate-800 dark:text-slate-100">תפריט תזונה</h1>
+          <p className="text-slate-400 dark:text-slate-500 text-xs">
             יעד: {NUTRITION_GOAL_LABELS[plan.goal]} · {plan.targetCalories} קלוריות
           </p>
         </div>
 
         {/* Summary card */}
-        <div className="bg-white rounded-3xl p-4 shadow-card border border-slate-100">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-4 shadow-card border border-slate-100 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-bold text-slate-700">סיכום יומי</span>
-            <span className="text-xs text-slate-400">
+            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">סיכום יומי</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500">
               {mealsCompleted}/{plan.meals.length} ארוחות
             </span>
           </div>
           <div className="grid grid-cols-4 gap-2 text-center">
-            <div className="bg-orange-50 rounded-2xl p-2">
-              <p className="text-lg font-black text-orange-600">{totalCals}</p>
-              <p className="text-[10px] text-orange-400">קלוריות</p>
+            <div className="bg-orange-50 dark:bg-orange-900/30 rounded-2xl p-2">
+              <p className="text-lg font-black text-orange-600 dark:text-orange-400">{totalCals}</p>
+              <p className="text-[10px] text-orange-400 dark:text-orange-300">קלוריות</p>
             </div>
-            <div className="bg-red-50 rounded-2xl p-2">
-              <p className="text-lg font-black text-red-600">{totalProtein}g</p>
-              <p className="text-[10px] text-red-400">חלבון</p>
+            <div className="bg-red-50 dark:bg-red-900/30 rounded-2xl p-2">
+              <p className="text-lg font-black text-red-600 dark:text-red-400">{totalProtein}g</p>
+              <p className="text-[10px] text-red-400 dark:text-red-300">חלבון</p>
             </div>
-            <div className="bg-blue-50 rounded-2xl p-2">
-              <p className="text-lg font-black text-blue-600">{totalCarbs}g</p>
-              <p className="text-[10px] text-blue-400">פחמימה</p>
+            <div className="bg-blue-50 dark:bg-blue-900/30 rounded-2xl p-2">
+              <p className="text-lg font-black text-blue-600 dark:text-blue-400">{totalCarbs}g</p>
+              <p className="text-[10px] text-blue-400 dark:text-blue-300">פחמימה</p>
             </div>
-            <div className="bg-yellow-50 rounded-2xl p-2">
-              <p className="text-lg font-black text-yellow-600">{totalFat}g</p>
-              <p className="text-[10px] text-yellow-400">שומן</p>
+            <div className="bg-yellow-50 dark:bg-yellow-900/30 rounded-2xl p-2">
+              <p className="text-lg font-black text-yellow-600 dark:text-yellow-400">{totalFat}g</p>
+              <p className="text-[10px] text-yellow-400 dark:text-yellow-300">שומן</p>
             </div>
           </div>
           {/* Progress bar */}
           <div className="mt-3">
-            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
               <div
                 className="h-full bg-primary rounded-full transition-all duration-500"
                 style={{ width: `${plan.meals.length > 0 ? (mealsCompleted / plan.meals.length) * 100 : 0}%` }}
@@ -178,8 +178,8 @@ export default function MealPlanPage() {
           return (
             <div
               key={meal.id}
-              className={`bg-white rounded-3xl shadow-card border transition-all ${
-                eaten ? "border-green-200 bg-green-50/30" : "border-slate-100"
+              className={`bg-white dark:bg-slate-800 rounded-3xl shadow-card border transition-all ${
+                eaten ? "border-green-200 dark:border-green-800 bg-green-50/30 dark:bg-green-900/20" : "border-slate-100 dark:border-slate-700"
               }`}
             >
               {/* Meal header with check button */}
@@ -192,23 +192,23 @@ export default function MealPlanPage() {
                     className={`w-10 h-10 rounded-2xl flex items-center justify-center text-lg font-bold transition-all ${
                       eaten
                         ? "bg-green-500 text-white"
-                        : "bg-slate-100 text-slate-400"
+                        : "bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500"
                     }`}
                   >
                     {eaten ? "✓" : meal.orderIndex + 1}
                   </div>
                   <div className="text-right">
-                    <p className={`font-bold text-sm ${eaten ? "text-green-700" : "text-slate-800"}`}>
+                    <p className={`font-bold text-sm ${eaten ? "text-green-700 dark:text-green-400" : "text-slate-800 dark:text-slate-100"}`}>
                       {meal.name}
                     </p>
-                    <p className="text-xs text-slate-400">{mealCals} קלוריות</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">{mealCals} קלוריות</p>
                   </div>
                 </div>
                 <div
                   className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
                     eaten
                       ? "border-green-500 bg-green-500 text-white"
-                      : "border-slate-300"
+                      : "border-slate-300 dark:border-slate-600"
                   }`}
                 >
                   {eaten && (
@@ -224,19 +224,19 @@ export default function MealPlanPage() {
                 {meal.foods.map((mf) => (
                   <div
                     key={mf.id}
-                    className="flex items-center justify-between py-1.5 border-t border-slate-50"
+                    className="flex items-center justify-between py-1.5 border-t border-slate-50 dark:border-slate-700"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-400 w-6">
+                      <span className="text-xs text-slate-400 dark:text-slate-500 w-6">
                         {FOOD_CATEGORY_LABELS[mf.food.category as FoodCategory]?.[0] ?? ""}
                       </span>
-                      <span className={`text-sm ${eaten ? "text-green-700" : "text-slate-700"}`}>
+                      <span className={`text-sm ${eaten ? "text-green-700 dark:text-green-400" : "text-slate-700 dark:text-slate-200"}`}>
                         {mf.food.nameHe}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-slate-400">
+                    <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500">
                       <span>{mf.amountGrams}g</span>
-                      <span className="font-semibold text-slate-500">
+                      <span className="font-semibold text-slate-500 dark:text-slate-400">
                         {calcNutrient(mf.food, mf.amountGrams, "caloriesPer100g")} kcal
                       </span>
                     </div>

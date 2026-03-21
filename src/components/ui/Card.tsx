@@ -23,7 +23,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "bg-white rounded-3xl shadow-card border border-slate-100",
+        "bg-white rounded-3xl shadow-card border border-slate-100 dark:bg-slate-800 dark:border-slate-700",
         hover && "transition-shadow duration-200 hover:shadow-card-hover cursor-pointer",
         paddingClasses[padding],
         className

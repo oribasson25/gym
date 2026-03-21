@@ -30,7 +30,7 @@ export function WorkoutTypeCard({ info, lastSessionDate, isAdmin }: WorkoutTypeC
 
       <div className="flex items-center gap-0">
         {/* Main tap area → workout */}
-        <Link href={`/workout/${slug}`} className="flex-1 p-4 active:bg-slate-50 transition-colors">
+        <Link href={`/workout/${slug}`} className="flex-1 p-4 active:bg-slate-50 dark:active:bg-slate-700 transition-colors">
           <div className="flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
@@ -39,8 +39,8 @@ export function WorkoutTypeCard({ info, lastSessionDate, isAdmin }: WorkoutTypeC
               {info.icon}
             </div>
             <div>
-              <h3 className="font-bold text-slate-800 leading-tight">{info.labelHe}</h3>
-              <p className="text-slate-500 text-xs mt-0.5">{info.description}</p>
+              <h3 className="font-bold text-slate-800 dark:text-slate-100 leading-tight">{info.labelHe}</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">{info.description}</p>
               {lastSessionDate ? (
                 <p className="text-xs text-slate-400 mt-1">
                   אחרון: {format(new Date(lastSessionDate), "d בMMM", { locale: he })}

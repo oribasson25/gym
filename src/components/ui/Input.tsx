@@ -15,7 +15,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={inputId} className="text-sm font-medium text-slate-700">
+          <label htmlFor={inputId} className="text-sm font-medium text-slate-700 dark:text-slate-200">
             {label}
           </label>
         )}
@@ -23,8 +23,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            "w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3",
-            "text-slate-800 placeholder-slate-400",
+            "w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 dark:bg-slate-800 dark:border-slate-600",
+            "text-slate-800 placeholder-slate-400 dark:text-slate-100",
             "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary",
             "transition-all duration-150",
             error && "border-danger focus:ring-danger/30 focus:border-danger",
@@ -99,15 +99,15 @@ export function NumberInput({
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-        <label className="text-sm font-medium text-slate-700">{label}</label>
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-200">{label}</label>
       )}
-      <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-2 py-2 focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary transition-all">
+      <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-2xl px-2 py-2 focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary transition-all">
         {/* Decrement — physically first in DOM, shown on right in RTL via flex-row-reverse */}
         <button
           type="button"
           onClick={decrement}
-          className="w-9 h-9 rounded-xl bg-white shadow-sm border border-slate-200 flex items-center justify-center
-                     text-slate-600 font-bold text-xl active:bg-slate-100 transition-all active:scale-90 select-none flex-shrink-0"
+          className="w-9 h-9 rounded-xl bg-white dark:bg-slate-700 shadow-sm border border-slate-200 dark:border-slate-600 flex items-center justify-center
+                     text-slate-600 dark:text-slate-200 font-bold text-xl active:bg-slate-100 dark:active:bg-slate-600 transition-all active:scale-90 select-none flex-shrink-0"
         >
           −
         </button>
@@ -124,7 +124,7 @@ export function NumberInput({
               if (e.key === "Enter") commit(raw);
             }}
             dir="ltr"
-            className="w-16 text-center bg-transparent text-slate-800 font-bold text-lg
+            className="w-16 text-center bg-transparent text-slate-800 dark:text-slate-100 font-bold text-lg
                        focus:outline-none border-none p-0 leading-none"
           />
           {suffix && (
@@ -136,8 +136,8 @@ export function NumberInput({
         <button
           type="button"
           onClick={increment}
-          className="w-9 h-9 rounded-xl bg-white shadow-sm border border-slate-200 flex items-center justify-center
-                     text-slate-600 font-bold text-xl active:bg-slate-100 transition-all active:scale-90 select-none flex-shrink-0"
+          className="w-9 h-9 rounded-xl bg-white dark:bg-slate-700 shadow-sm border border-slate-200 dark:border-slate-600 flex items-center justify-center
+                     text-slate-600 dark:text-slate-200 font-bold text-xl active:bg-slate-100 dark:active:bg-slate-600 transition-all active:scale-90 select-none flex-shrink-0"
         >
           +
         </button>

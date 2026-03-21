@@ -23,7 +23,7 @@ const buttons: {
     sublabel: "כל הסטים",
     icon: "✓",
     classes:
-      "bg-white border-2 border-success text-success hover:bg-success-50",
+      "bg-white dark:bg-slate-800 border-2 border-success text-success hover:bg-success-50",
     selectedClasses: "bg-success text-white border-success shadow-lg shadow-success/30",
   },
   {
@@ -32,7 +32,7 @@ const buttons: {
     sublabel: "חלק מהסטים",
     icon: "~",
     classes:
-      "bg-white border-2 border-warning text-warning hover:bg-warning-50",
+      "bg-white dark:bg-slate-800 border-2 border-warning text-warning hover:bg-warning-50",
     selectedClasses:
       "bg-warning text-white border-warning shadow-lg shadow-warning/30",
   },
@@ -42,7 +42,7 @@ const buttons: {
     sublabel: "לא הצלחתי",
     icon: "✗",
     classes:
-      "bg-white border-2 border-danger text-danger hover:bg-danger-50",
+      "bg-white dark:bg-slate-800 border-2 border-danger text-danger hover:bg-danger-50",
     selectedClasses: "bg-danger text-white border-danger shadow-lg shadow-danger/30",
   },
 ];
