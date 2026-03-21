@@ -39,6 +39,13 @@ export function DashboardClient({
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              href="/about"
+              className="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center
+                         justify-center text-slate-500 dark:text-slate-400 font-bold text-lg active:scale-90 transition-all"
+            >
+              i
+            </Link>
             {needsPhotoReminder && (
               <button
                 onClick={() => setShowPhotoModal(true)}
