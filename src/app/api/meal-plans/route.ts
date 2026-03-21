@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
-import { calculateTargetCalories } from "@/lib/calories";
 import { z } from "zod";
 
 const mealFoodSchema = z.object({
@@ -18,6 +17,7 @@ const mealSchema = z.object({
 const createMealPlanSchema = z.object({
   userId: z.string(),
   goal: z.enum(["BULK", "CUT"]),
+  targetCalories: z.number().int().min(1),
   meals: z.array(mealSchema),
 });
 
@@ -52,10 +52,7 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  const tdee = calculateTargetCalories(targetUser.weightKg, targetUser.heightCm, targetUser.age, "BULK");
-  const tdeeNeutral = tdee - 300; // undo the bulk surplus to get neutral TDEE
-
-  return NextResponse.json({ plan, tdee: tdeeNeutral, user: { weightKg: targetUser.weightKg, heightCm: targetUser.heightCm, age: targetUser.age } });
+  return NextResponse.json({ plan, user: { weightKg: targetUser.weightKg, heightCm: targetUser.heightCm, age: targetUser.age } });
 }
 
 export async function POST(req: NextRequest) {
@@ -70,14 +67,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { userId, goal, meals } = parsed.data;
-
-  const targetUser = await prisma.user.findUnique({ where: { id: userId } });
-  if (!targetUser) {
-    return NextResponse.json({ error: "משתמש לא נמצא" }, { status: 404 });
-  }
-
-  const targetCalories = calculateTargetCalories(targetUser.weightKg, targetUser.heightCm, targetUser.age, goal);
+  const { userId, goal, targetCalories, meals } = parsed.data;
 
   // Deactivate existing plans for this user
   await prisma.mealPlan.updateMany({

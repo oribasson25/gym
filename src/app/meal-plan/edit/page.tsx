@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
-import { calculateTargetCalories, calculateTDEE } from "@/lib/calories";
+import { calculateTDEE } from "@/lib/calories";
 import { NUTRITION_GOAL_LABELS, FOOD_CATEGORY_LABELS } from "@/types";
 import type { NutritionGoal, FoodCategory } from "@/types";
 
@@ -33,6 +33,7 @@ function MealPlanEditor() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [goal, setGoal] = useState<NutritionGoal>("BULK");
+  const [targetCalories, setTargetCalories] = useState<number>(2500);
   const [meals, setMeals] = useState<MealDraft[]>([
     { name: "ארוחת בוקר", foods: [] },
     { name: "ארוחת ביניים", foods: [] },
@@ -62,6 +63,7 @@ function MealPlanEditor() {
       // Load existing plan if any
       if (planData.plan) {
         setGoal(planData.plan.goal);
+        setTargetCalories(planData.plan.targetCalories);
         setMeals(
           planData.plan.meals.map((m: { name: string; foods: { food: Food; amountGrams: number }[] }) => ({
             name: m.name,
@@ -138,6 +140,7 @@ function MealPlanEditor() {
     const body = {
       userId,
       goal,
+      targetCalories,
       meals: meals
         .filter((m) => m.foods.length > 0)
         .map((m, i) => ({
@@ -159,9 +162,7 @@ function MealPlanEditor() {
     setSaving(false);
   };
 
-  // Calcs
   const tdee = userData ? calculateTDEE(userData.weightKg, userData.heightCm, userData.age) : 0;
-  const targetCals = userData ? calculateTargetCalories(userData.weightKg, userData.heightCm, userData.age, goal) : 0;
 
   const totalCals = meals.reduce(
     (sum, meal) =>
@@ -252,11 +253,16 @@ function MealPlanEditor() {
             ))}
           </div>
 
-          <div className="text-center">
+          <div className="text-center space-y-1">
             <p className="text-xs text-slate-400">יעד קלוריות</p>
-            <p className="text-2xl font-black text-primary">{targetCals}</p>
+            <input
+              type="number"
+              value={targetCalories}
+              onChange={(e) => setTargetCalories(Math.max(0, Number(e.target.value)))}
+              className="w-32 text-center text-2xl font-black text-primary bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
             <p className="text-xs text-slate-400">
-              {goal === "BULK" ? `TDEE + 300` : `TDEE - 400`}
+              TDEE: {tdee}
             </p>
           </div>
         </div>
@@ -265,10 +271,10 @@ function MealPlanEditor() {
         <div className="bg-white rounded-3xl p-3 shadow-card border border-slate-100 flex items-center justify-between">
           <div className="text-sm">
             <span className="font-bold text-slate-700">סה"כ: </span>
-            <span className={`font-black ${totalCals > targetCals ? "text-red-500" : "text-green-600"}`}>
+            <span className={`font-black ${totalCals > targetCalories ? "text-red-500" : "text-green-600"}`}>
               {totalCals}
             </span>
-            <span className="text-slate-400"> / {targetCals} kcal</span>
+            <span className="text-slate-400"> / {targetCalories} kcal</span>
           </div>
           <div className="text-sm">
             <span className="font-bold text-slate-700">חלבון: </span>
