@@ -58,9 +58,15 @@ export async function getWeightSuggestion(
     suggestedWeight = lastWeight;
     reasoning = "הצלחה חלקית – שמירה על אותו משקל";
   } else if (difficulty !== null) {
-    if (difficulty < 7) {
-      suggestedWeight = roundToHalf(lastWeight * 1.025);
-      reasoning = `קושי ${difficulty}/10 – העלאה של 2.5%`;
+    if (difficulty <= 3) {
+      suggestedWeight = lastWeight + 10;
+      reasoning = `קושי ${difficulty}/10 – העלאה של 10 ק״ג`;
+    } else if (difficulty <= 6) {
+      suggestedWeight = lastWeight + 5;
+      reasoning = `קושי ${difficulty}/10 – העלאה של 5 ק״ג`;
+    } else if (difficulty <= 8) {
+      suggestedWeight = roundToHalf(lastWeight + 2.5);
+      reasoning = `קושי ${difficulty}/10 – העלאה של 2.5 ק״ג`;
     } else {
       suggestedWeight = lastWeight;
       reasoning = `קושי ${difficulty}/10 – שמירה על אותו משקל`;

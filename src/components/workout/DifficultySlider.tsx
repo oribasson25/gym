@@ -53,12 +53,22 @@ export function DifficultySlider({ value, onChange }: DifficultySliderProps) {
         <div className="text-center">
           <span className={cn("text-2xl font-black", text)}>{value}/10</span>
           <span className="text-slate-500 text-base font-medium mr-2">— {label}</span>
-          {value < 7 && (
+          {value <= 3 && (
             <p className="text-xs text-slate-400 mt-1">
-              המשקל יועלה ב-2.5% באימון הבא
+              המשקל יעלה ב-10 ק״ג באימון הבא
             </p>
           )}
-          {value >= 8 && (
+          {value >= 4 && value <= 6 && (
+            <p className="text-xs text-slate-400 mt-1">
+              המשקל יעלה ב-5 ק״ג באימון הבא
+            </p>
+          )}
+          {value >= 7 && value <= 8 && (
+            <p className="text-xs text-slate-400 mt-1">
+              המשקל יעלה ב-2.5 ק״ג באימון הבא
+            </p>
+          )}
+          {value >= 9 && (
             <p className="text-xs text-slate-400 mt-1">
               המשקל יישאר זהה באימון הבא
             </p>

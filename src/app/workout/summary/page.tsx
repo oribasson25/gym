@@ -86,11 +86,22 @@ function SummaryContent() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 text-center"
         >
-          {rating < 7 ? (
+          {rating <= 3 && (
             <p className="text-sm text-success font-semibold">
-              המשקל יעלה ב-2.5% באימון הבא 📈
+              המשקל יעלה ב-10 ק״ג באימון הבא 📈
             </p>
-          ) : (
+          )}
+          {rating >= 4 && rating <= 6 && (
+            <p className="text-sm text-success font-semibold">
+              המשקל יעלה ב-5 ק״ג באימון הבא 📈
+            </p>
+          )}
+          {rating >= 7 && rating <= 8 && (
+            <p className="text-sm text-primary font-semibold">
+              המשקל יעלה ב-2.5 ק״ג באימון הבא 💪
+            </p>
+          )}
+          {rating >= 9 && (
             <p className="text-sm text-slate-500 font-medium">
               המשקל יישאר זהה באימון הבא ⚡
             </p>
