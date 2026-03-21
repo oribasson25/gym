@@ -48,6 +48,15 @@ function MealPlanEditor() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
 
+  // Custom food form
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customName, setCustomName] = useState("");
+  const [customCalories, setCustomCalories] = useState("");
+  const [customProtein, setCustomProtein] = useState("");
+  const [customCarbs, setCustomCarbs] = useState("");
+  const [customFat, setCustomFat] = useState("");
+  const [creatingCustom, setCreatingCustom] = useState(false);
+
   useEffect(() => {
     async function load() {
       const [foodsRes, planRes] = await Promise.all([
@@ -93,6 +102,7 @@ function MealPlanEditor() {
     });
     setPickerMealIdx(null);
     setSearchQuery("");
+    setShowCustomForm(false);
   };
 
   const removeFoodFromMeal = (mealIdx: number, foodId: string) => {
@@ -133,6 +143,35 @@ function MealPlanEditor() {
       updated[idx] = { ...updated[idx], name };
       return updated;
     });
+  };
+
+  const createCustomFood = async () => {
+    if (!customName || !customCalories || pickerMealIdx === null) return;
+    setCreatingCustom(true);
+    const res = await fetch("/api/foods", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nameHe: customName,
+        caloriesPer100g: Number(customCalories),
+        proteinPer100g: Number(customProtein) || 0,
+        carbsPer100g: Number(customCarbs) || 0,
+        fatPer100g: Number(customFat) || 0,
+        category: "OTHER",
+      }),
+    });
+    if (res.ok) {
+      const { food } = await res.json();
+      setFoods((prev) => [...prev, food]);
+      addFoodToMeal(pickerMealIdx, food);
+      setShowCustomForm(false);
+      setCustomName("");
+      setCustomCalories("");
+      setCustomProtein("");
+      setCustomCarbs("");
+      setCustomFat("");
+    }
+    setCreatingCustom(false);
   };
 
   const save = async () => {
@@ -408,6 +447,78 @@ function MealPlanEditor() {
               </div>
             </div>
             <div className="overflow-y-auto flex-1 p-4 space-y-1">
+              {/* Custom food button / form */}
+              {!showCustomForm ? (
+                <button
+                  onClick={() => setShowCustomForm(true)}
+                  className="w-full py-3 mb-2 border-2 border-dashed border-primary/40 rounded-2xl text-sm text-primary font-bold active:scale-[0.98] transition-all"
+                >
+                  + הוסף מזון מותאם אישית
+                </button>
+              ) : (
+                <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-3 mb-3 space-y-2 border border-primary/30">
+                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200">מזון מותאם אישית</p>
+                  <input
+                    type="text"
+                    value={customName}
+                    onChange={(e) => setCustomName(e.target.value)}
+                    placeholder="שם המזון *"
+                    autoFocus
+                    className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm text-right
+                               placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <input
+                    type="number"
+                    value={customCalories}
+                    onChange={(e) => setCustomCalories(e.target.value)}
+                    placeholder="קלוריות ל-100 גרם *"
+                    className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm text-right
+                               placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      value={customProtein}
+                      onChange={(e) => setCustomProtein(e.target.value)}
+                      placeholder="חלבון (g)"
+                      className="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm text-right
+                                 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                    <input
+                      type="number"
+                      value={customCarbs}
+                      onChange={(e) => setCustomCarbs(e.target.value)}
+                      placeholder="פחמימות (g)"
+                      className="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm text-right
+                                 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                    <input
+                      type="number"
+                      value={customFat}
+                      onChange={(e) => setCustomFat(e.target.value)}
+                      placeholder="שומן (g)"
+                      className="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm text-right
+                                 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={createCustomFood}
+                      disabled={!customName || !customCalories || creatingCustom}
+                      className="flex-1 py-2 bg-primary text-white text-sm font-bold rounded-xl active:scale-95 transition-all disabled:opacity-50"
+                    >
+                      {creatingCustom ? "יוצר..." : "הוסף"}
+                    </button>
+                    <button
+                      onClick={() => setShowCustomForm(false)}
+                      className="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 text-sm font-bold rounded-xl active:scale-95 transition-all"
+                    >
+                      ביטול
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {filteredFoods.map((food) => (
                 <button
                   key={food.id}
