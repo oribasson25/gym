@@ -137,8 +137,6 @@ model MealPlan {
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   meals MealPlanMeal[]
-
-  @@unique([userId, goal])
 }
 
 model MealPlanMeal {
