@@ -45,11 +45,12 @@ type Session = {
 interface HistoryClientProps {
   sessions: Session[];
   exercises: { id: string; name: string; nameHe: string; muscleGroup: MuscleGroup }[];
+  viewingUserName?: string;
 }
 
 const TABS = ["היסטוריה", "גרף משקל"];
 
-export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
+export function HistoryClient({ sessions, exercises, viewingUserName }: HistoryClientProps) {
   const [activeTab, setActiveTab] = useState(0);
   const [selectedExerciseId, setSelectedExerciseId] = useState(
     exercises[0]?.id ?? ""
@@ -78,7 +79,9 @@ export function HistoryClient({ sessions, exercises }: HistoryClientProps) {
       <div className="max-w-2xl mx-auto px-4 pt-6 pb-4 space-y-5">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">היסטוריה</h1>
+          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">
+            {viewingUserName ? `היסטוריה — ${viewingUserName}` : "היסטוריה"}
+          </h1>
           <p className="text-slate-400 dark:text-slate-500 text-sm">{sessions.length} אימונים מוקלטים</p>
         </div>
 

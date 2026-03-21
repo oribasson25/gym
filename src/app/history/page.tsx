@@ -3,12 +3,26 @@ import { redirect } from "next/navigation";
 import { HistoryClient } from "./HistoryClient";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
-export default async function HistoryPage() {
+export default async function HistoryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ userId?: string; userName?: string }>;
+}) {
   const user = await getCurrentUser();
   if (!user) redirect("/");
 
+  const params = await searchParams;
+
+  // Admin can view other users' history
+  let targetUserId = user.id;
+  let targetUserName: string | undefined;
+  if (params.userId && user.role === "ADMIN") {
+    targetUserId = params.userId;
+    targetUserName = params.userName;
+  }
+
   const sessions = await prisma.workoutSession.findMany({
-    where: { userId: user.id, completedAt: { not: null } },
+    where: { userId: targetUserId, completedAt: { not: null } },
     include: {
       exercises: {
         include: { exercise: true },
@@ -24,5 +38,11 @@ export default async function HistoryPage() {
     select: { id: true, name: true, nameHe: true, muscleGroup: true },
   });
 
-  return <HistoryClient sessions={sessions as never} exercises={exercises} />;
+  return (
+    <HistoryClient
+      sessions={sessions as never}
+      exercises={exercises}
+      viewingUserName={targetUserName}
+    />
+  );
 }

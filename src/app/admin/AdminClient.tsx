@@ -225,6 +225,12 @@ export function AdminClient() {
                     >
                       תפריט תזונה
                     </Link>
+                    <Link
+                      href={`/history?userId=${u.id}&userName=${encodeURIComponent(u.name)}`}
+                      className="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
+                    >
+                      היסטוריה
+                    </Link>
                   </div>
 
                   {plansUserId === u.id && (
