@@ -1,0 +1,17 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
+
+export async function GET() {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ unreadCount: 0 });
+
+  const unreadCount = await prisma.message.count({
+    where: {
+      receiverId: user.id,
+      read: false,
+    },
+  });
+
+  return NextResponse.json({ unreadCount });
+}
