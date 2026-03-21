@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
-const WORKOUT_TYPES = ["PUSH", "PULL", "LEGS", "CHEST_BACK", "SHOULDERS_ARMS"] as const;
+const WORKOUT_TYPES = ["FULL_BODY", "PUSH", "PULL", "LEGS", "CHEST_BACK", "SHOULDERS_ARMS"] as const;
 
 const planExerciseSchema = z.object({
   exerciseId: z.string(),
@@ -18,12 +18,22 @@ const createPlanSchema = z.object({
   exercises: z.array(planExerciseSchema),
 });
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ plans: [] });
 
+  // Admin can view plans for a specific user
+  let targetUserId = user.id;
+  const requestedUserId = req.nextUrl.searchParams.get("userId");
+  if (requestedUserId) {
+    if (user.role !== "ADMIN") {
+      return NextResponse.json({ error: "אין הרשאה" }, { status: 403 });
+    }
+    targetUserId = requestedUserId;
+  }
+
   const plans = await prisma.workoutPlan.findMany({
-    where: { userId: user.id, isActive: true },
+    where: { userId: targetUserId, isActive: true },
     include: {
       exercises: {
         include: { exercise: true },
@@ -54,15 +64,22 @@ export async function POST(req: NextRequest) {
 
   const { workoutType, exercises } = parsed.data;
 
+  // Admin can create plans for a specific user
+  let targetUserId = user.id;
+  const requestedUserId = req.nextUrl.searchParams.get("userId");
+  if (requestedUserId) {
+    targetUserId = requestedUserId;
+  }
+
   // Deactivate existing plan of same type
   await prisma.workoutPlan.updateMany({
-    where: { userId: user.id, workoutType },
+    where: { userId: targetUserId, workoutType },
     data: { isActive: false },
   });
 
   const plan = await prisma.workoutPlan.create({
     data: {
-      userId: user.id,
+      userId: targetUserId,
       workoutType,
       exercises: {
         create: exercises.map((e) => ({

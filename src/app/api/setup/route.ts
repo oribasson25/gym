@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { uploadImage } from "@/lib/cloudinary";
 import { z } from "zod";
 
-const WORKOUT_TYPES = ["PUSH", "PULL", "LEGS", "CHEST_BACK", "SHOULDERS_ARMS"] as const;
+const WORKOUT_TYPES = ["FULL_BODY", "PUSH", "PULL", "LEGS", "CHEST_BACK", "SHOULDERS_ARMS"] as const;
 
 const planExerciseSchema = z.object({
   exerciseId: z.string(),

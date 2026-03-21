@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -35,9 +35,12 @@ type LibExercise = {
 export default function PlanEditorPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params.type as WorkoutTypeSlug;
   const workoutType = SLUG_TO_TYPE[slug];
   const workoutInfo = WORKOUT_TYPES.find((wt) => wt.type === workoutType);
+  const targetUserId = searchParams.get("userId");
+  const targetUserName = searchParams.get("userName");
 
   const [planId, setPlanId] = useState<string | null>(null);
   const [exercises, setExercises] = useState<PlanExercise[]>([]);
@@ -61,8 +64,11 @@ export default function PlanEditorPage() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
+      const plansUrl = targetUserId
+        ? `/api/workout-plans?userId=${targetUserId}`
+        : "/api/workout-plans";
       const [plansRes, exRes] = await Promise.all([
-        fetch("/api/workout-plans"),
+        fetch(plansUrl),
         fetch("/api/exercises"),
       ]);
       const { plans } = await plansRes.json();
@@ -103,7 +109,7 @@ export default function PlanEditorPage() {
     } finally {
       setLoading(false);
     }
-  }, [workoutType]);
+  }, [workoutType, targetUserId]);
 
   useEffect(() => {
     loadData();
@@ -144,6 +150,7 @@ export default function PlanEditorPage() {
     setError(null);
     try {
       let res: Response;
+      const userParam = targetUserId ? `?userId=${targetUserId}` : "";
       if (planId) {
         res = await fetch(`/api/workout-plans/${planId}`, {
           method: "PUT",
@@ -151,7 +158,7 @@ export default function PlanEditorPage() {
           body: JSON.stringify({ exercises }),
         });
       } else {
-        res = await fetch("/api/workout-plans", {
+        res = await fetch(`/api/workout-plans${userParam}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ workoutType, exercises }),
@@ -221,7 +228,10 @@ export default function PlanEditorPage() {
             <h1 className="text-lg font-black text-slate-800 leading-tight">
               עריכת תוכנית
             </h1>
-            <p className="text-slate-400 text-xs">{workoutInfo.labelHe}</p>
+            <p className="text-slate-400 text-xs">
+              {workoutInfo.labelHe}
+              {targetUserName && ` · ${targetUserName}`}
+            </p>
           </div>
         </div>
 

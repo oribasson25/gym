@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
 import { cn } from "@/lib/utils/cn";
+import { WORKOUT_TYPES, TYPE_TO_SLUG } from "@/types";
 
 type UserRow = {
   id: string;
@@ -23,6 +25,9 @@ export function AdminClient() {
   const [newPassword, setNewPassword] = useState("");
   const [createError, setCreateError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+
+  // Plans management
+  const [plansUserId, setPlansUserId] = useState<string | null>(null);
 
   // Reset password
   const [resetId, setResetId] = useState<string | null>(null);
@@ -205,6 +210,32 @@ export function AdminClient() {
                       )}
                     </div>
                   </div>
+
+                  {/* Workout plans management */}
+                  <div className="mt-2 flex gap-2">
+                    <button
+                      onClick={() => setPlansUserId(plansUserId === u.id ? null : u.id)}
+                      className="text-xs bg-green-50 text-green-600 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
+                    >
+                      {plansUserId === u.id ? "סגור תוכניות" : "תוכניות אימון"}
+                    </button>
+                  </div>
+
+                  {plansUserId === u.id && (
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                      {WORKOUT_TYPES.map((wt) => (
+                        <Link
+                          key={wt.type}
+                          href={`/plans/${TYPE_TO_SLUG[wt.type]}?userId=${u.id}&userName=${encodeURIComponent(u.name)}`}
+                          className="flex items-center gap-2 p-2 rounded-xl border border-slate-200 bg-white
+                                     active:scale-95 transition-all"
+                        >
+                          <span className="text-lg">{wt.icon}</span>
+                          <span className="text-xs font-semibold text-slate-700">{wt.labelHe}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Inline reset password */}
                   {resetId === u.id && (

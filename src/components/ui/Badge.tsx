@@ -57,6 +57,7 @@ export function StatusBadge({ status }: { status: ExerciseStatus }) {
 
 export function WorkoutTypeBadge({ type }: { type: WorkoutType }) {
   const map: Record<WorkoutType, { label: string; variant: BadgeVariant }> = {
+    FULL_BODY: { label: "גוף מלא", variant: "default" },
     PUSH: { label: "דחיפה", variant: "primary" },
     PULL: { label: "משיכה", variant: "primary" },
     LEGS: { label: "רגליים", variant: "success" },

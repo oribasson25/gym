@@ -16,6 +16,7 @@ export default async function DashboardPage() {
   });
 
   const lastByType: Record<WorkoutType, Date | null> = {
+    FULL_BODY: null,
     PUSH: null,
     PULL: null,
     LEGS: null,

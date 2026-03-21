@@ -1,5 +1,5 @@
 // SQLite doesn't support Prisma enums — using string unions instead
-export type WorkoutType = "PUSH" | "PULL" | "LEGS" | "CHEST_BACK" | "SHOULDERS_ARMS";
+export type WorkoutType = "FULL_BODY" | "PUSH" | "PULL" | "LEGS" | "CHEST_BACK" | "SHOULDERS_ARMS";
 export type MuscleGroup =
   | "CHEST"
   | "BACK"
@@ -28,6 +28,17 @@ export type WorkoutTypeInfo = {
 };
 
 export const WORKOUT_TYPES: WorkoutTypeInfo[] = [
+  {
+    type: "FULL_BODY",
+    label: "Full Body",
+    labelHe: "גוף מלא",
+    description: "כל קבוצות השרירים",
+    color: "#0EA5E9",
+    bgColor: "#F0F9FF",
+    textColor: "#0369A1",
+    muscleGroups: ["CHEST", "BACK", "LEGS", "SHOULDERS", "BICEPS", "TRICEPS", "ABS", "GLUTES", "CALVES"],
+    icon: "🏆",
+  },
   {
     type: "PUSH",
     label: "Push",
@@ -86,6 +97,7 @@ export const WORKOUT_TYPES: WorkoutTypeInfo[] = [
 ];
 
 export type WorkoutTypeSlug =
+  | "full-body"
   | "push"
   | "pull"
   | "legs"
@@ -93,6 +105,7 @@ export type WorkoutTypeSlug =
   | "shoulders-arms";
 
 export const SLUG_TO_TYPE: Record<WorkoutTypeSlug, WorkoutType> = {
+  "full-body": "FULL_BODY",
   push: "PUSH",
   pull: "PULL",
   legs: "LEGS",
@@ -101,6 +114,7 @@ export const SLUG_TO_TYPE: Record<WorkoutTypeSlug, WorkoutType> = {
 };
 
 export const TYPE_TO_SLUG: Record<WorkoutType, WorkoutTypeSlug> = {
+  FULL_BODY: "full-body",
   PUSH: "push",
   PULL: "pull",
   LEGS: "legs",
