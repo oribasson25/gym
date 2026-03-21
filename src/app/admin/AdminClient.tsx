@@ -211,7 +211,7 @@ export function AdminClient() {
                     </div>
                   </div>
 
-                  {/* Workout plans management */}
+                  {/* Workout plans & meal plans management */}
                   <div className="mt-2 flex gap-2">
                     <button
                       onClick={() => setPlansUserId(plansUserId === u.id ? null : u.id)}
@@ -219,6 +219,12 @@ export function AdminClient() {
                     >
                       {plansUserId === u.id ? "סגור תוכניות" : "תוכניות אימון"}
                     </button>
+                    <Link
+                      href={`/meal-plan/edit?userId=${u.id}&userName=${encodeURIComponent(u.name)}`}
+                      className="text-xs bg-orange-50 text-orange-600 font-semibold px-3 py-1.5 rounded-xl active:scale-90 transition-all"
+                    >
+                      תפריט תזונה
+                    </Link>
                   </div>
 
                   {plansUserId === u.id && (

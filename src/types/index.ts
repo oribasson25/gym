@@ -14,6 +14,25 @@ export type MuscleGroup =
   | "CALVES"
   | "OTHER";
 export type ExerciseStatus = "PENDING" | "SUCCESS" | "PARTIAL" | "FAIL";
+export type NutritionGoal = "BULK" | "CUT";
+export type FoodCategory = "PROTEIN" | "CARB" | "FAT" | "VEGETABLE" | "FRUIT" | "DAIRY" | "SNACK" | "DRINK" | "OTHER";
+
+export const NUTRITION_GOAL_LABELS: Record<NutritionGoal, string> = {
+  BULK: "מסה",
+  CUT: "חיטוב",
+};
+
+export const FOOD_CATEGORY_LABELS: Record<FoodCategory, string> = {
+  PROTEIN: "חלבון",
+  CARB: "פחמימה",
+  FAT: "שומן",
+  VEGETABLE: "ירק",
+  FRUIT: "פרי",
+  DAIRY: "חלבי",
+  SNACK: "חטיף",
+  DRINK: "שתייה",
+  OTHER: "אחר",
+};
 
 export type WorkoutTypeInfo = {
   type: WorkoutType;

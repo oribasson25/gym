@@ -22,6 +22,8 @@ model User {
   workoutPlans    WorkoutPlan[]
   workoutSessions WorkoutSession[]
   progressPhotos  ProgressPhoto[]
+  mealPlans       MealPlan[]
+  dailyMealLogs   DailyMealLog[]
 }
 
 model Exercise {
@@ -109,4 +111,68 @@ model ProgressPhoto {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, monthYear])
+}
+
+model Food {
+  id          String @id @default(cuid())
+  name        String @unique
+  nameHe      String
+  caloriesPer100g Float
+  proteinPer100g  Float @default(0)
+  carbsPer100g    Float @default(0)
+  fatPer100g      Float @default(0)
+  category    String // PROTEIN | CARB | FAT | VEGETABLE | FRUIT | DAIRY | SNACK | DRINK | OTHER
+
+  mealFoods   MealPlanMealFood[]
+}
+
+model MealPlan {
+  id             String   @id @default(cuid())
+  userId         String
+  goal           String   // BULK | CUT
+  targetCalories Int
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meals MealPlanMeal[]
+
+  @@unique([userId, goal])
+}
+
+model MealPlanMeal {
+  id         String @id @default(cuid())
+  planId     String
+  name       String // e.g. "ארוחת בוקר", "ארוחת צהריים"
+  orderIndex Int
+
+  plan  MealPlan           @relation(fields: [planId], references: [id], onDelete: Cascade)
+  foods MealPlanMealFood[]
+
+  @@unique([planId, orderIndex])
+}
+
+model MealPlanMealFood {
+  id       String @id @default(cuid())
+  mealId   String
+  foodId   String
+  amountGrams Float
+
+  meal MealPlanMeal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  food Food         @relation(fields: [foodId], references: [id])
+
+  @@unique([mealId, foodId])
+}
+
+model DailyMealLog {
+  id     String   @id @default(cuid())
+  userId String
+  mealId String
+  date   DateTime @db.Date
+  eaten  Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mealId, date])
 }
