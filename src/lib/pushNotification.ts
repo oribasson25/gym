@@ -1,26 +1,20 @@
-import webpush from "web-push";
 import { prisma } from "./prisma";
-
-let vapidConfigured = false;
-
-function ensureVapid() {
-  if (vapidConfigured) return;
-  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  const privateKey = process.env.VAPID_PRIVATE_KEY;
-  if (!publicKey || !privateKey) return;
-  webpush.setVapidDetails(
-    process.env.VAPID_SUBJECT || "mailto:admin@gymtracker.app",
-    publicKey,
-    privateKey
-  );
-  vapidConfigured = true;
-}
 
 export async function sendPushToUser(
   userId: string,
   payload: { title: string; body: string; url?: string }
 ) {
-  ensureVapid();
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+  if (!publicKey || !privateKey) return [];
+
+  const webpush = (await import("web-push")).default;
+
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT || "mailto:admin@gymtracker.app",
+    publicKey,
+    privateKey
+  );
 
   const subscriptions = await prisma.pushSubscription.findMany({
     where: { userId },
