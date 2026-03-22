@@ -22,6 +22,7 @@ type SessionExercise = {
   id: string;
   exerciseId: string;
   weightUsedKg: number;
+  weightsPerSet: string | null;
   status: ExerciseStatus;
   sets: number;
   reps: number;
@@ -154,20 +155,32 @@ export function HistoryClient({ sessions, exercises, viewingUserName }: HistoryC
 
                   {expandedSession === session.id && (
                     <div className="mt-4 space-y-2 border-t border-slate-100 dark:border-slate-700 pt-3">
-                      {session.exercises.map((ex) => (
-                        <div
-                          key={ex.id}
-                          className="flex items-center justify-between text-sm"
-                        >
-                          <div>
-                            <p className="font-medium text-slate-700 dark:text-slate-200">{ex.exercise.name}</p>
-                            <p className="text-xs text-slate-400 dark:text-slate-500">
-                              {ex.sets}×{ex.reps} · {ex.weightUsedKg} ק״ג
-                            </p>
+                      {session.exercises.map((ex) => {
+                        const perSet: number[] | null = ex.weightsPerSet
+                          ? (() => { try { return JSON.parse(ex.weightsPerSet); } catch { return null; } })()
+                          : null;
+                        const allSame = perSet && perSet.every((w: number) => w === perSet[0]);
+                        return (
+                          <div
+                            key={ex.id}
+                            className="flex items-center justify-between text-sm"
+                          >
+                            <div>
+                              <p className="font-medium text-slate-700 dark:text-slate-200">{ex.exercise.name}</p>
+                              {perSet && !allSame ? (
+                                <p className="text-xs text-slate-400 dark:text-slate-500">
+                                  {ex.reps} חזרות · {perSet.map((w: number, i: number) => `סט${i + 1}: ${w}`).join(" · ")} ק״ג
+                                </p>
+                              ) : (
+                                <p className="text-xs text-slate-400 dark:text-slate-500">
+                                  {ex.sets}×{ex.reps} · {ex.weightUsedKg} ק״ג
+                                </p>
+                              )}
+                            </div>
+                            <StatusBadge status={ex.status} />
                           </div>
-                          <StatusBadge status={ex.status} />
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </Card>

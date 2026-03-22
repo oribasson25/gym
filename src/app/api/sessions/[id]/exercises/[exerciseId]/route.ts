@@ -5,6 +5,7 @@ import { z } from "zod";
 const updateSchema = z.object({
   status: z.enum(["PENDING", "SUCCESS", "PARTIAL", "FAIL"]),
   weightUsedKg: z.number().min(0),
+  weightsPerSet: z.array(z.number().min(0)).optional(),
 });
 
 export async function PATCH(
@@ -19,11 +20,14 @@ export async function PATCH(
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
+  const { status, weightUsedKg, weightsPerSet } = parsed.data;
+
   const sessionExercise = await prisma.sessionExercise.update({
     where: { id: exerciseId },
     data: {
-      status: parsed.data.status,
-      weightUsedKg: parsed.data.weightUsedKg,
+      status,
+      weightUsedKg,
+      ...(weightsPerSet ? { weightsPerSet: JSON.stringify(weightsPerSet) } : {}),
     },
   });
 

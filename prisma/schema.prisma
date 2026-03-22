@@ -89,14 +89,15 @@ model WorkoutSession {
 }
 
 model SessionExercise {
-  id           String  @id @default(cuid())
-  sessionId    String
-  exerciseId   String
-  orderIndex   Int
-  sets         Int
-  reps         Int
-  weightUsedKg Float
-  status       String  @default("PENDING") // PENDING | SUCCESS | PARTIAL | FAIL
+  id             String  @id @default(cuid())
+  sessionId      String
+  exerciseId     String
+  orderIndex     Int
+  sets           Int
+  reps           Int
+  weightUsedKg   Float
+  weightsPerSet  String? // JSON array e.g. "[20,22.5,25,25]"
+  status         String  @default("PENDING") // PENDING | SUCCESS | PARTIAL | FAIL
 
   session  WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   exercise Exercise       @relation(fields: [exerciseId], references: [id])

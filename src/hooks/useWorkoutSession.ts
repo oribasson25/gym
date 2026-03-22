@@ -65,12 +65,17 @@ export function useWorkoutSession() {
   );
 
   const markExercise = useCallback(
-    async (status: ExerciseStatus, weightUsedKg: number) => {
+    async (status: ExerciseStatus) => {
       const { sessionId, exercises, currentIndex } = state;
       if (!sessionId) return;
 
       const exercise = exercises[currentIndex];
       if (!exercise) return;
+
+      const weightsPerSet = exercise.weightsPerSet;
+      const avgWeight = weightsPerSet.length > 0
+        ? Math.round((weightsPerSet.reduce((a, b) => a + b, 0) / weightsPerSet.length) * 2) / 2
+        : exercise.weightUsedKg;
 
       setLoading(true);
       try {
@@ -79,7 +84,7 @@ export function useWorkoutSession() {
           {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status, weightUsedKg }),
+            body: JSON.stringify({ status, weightUsedKg: avgWeight, weightsPerSet }),
           }
         );
 
@@ -91,7 +96,7 @@ export function useWorkoutSession() {
           newExercises[currentIndex] = {
             ...newExercises[currentIndex],
             status,
-            weightUsedKg,
+            weightUsedKg: avgWeight,
           };
 
           const nextIndex = currentIndex + 1;
@@ -126,10 +131,15 @@ export function useWorkoutSession() {
     [state]
   );
 
-  const updateWeight = useCallback((index: number, weight: number) => {
+  const updateSetWeight = useCallback((exerciseIndex: number, setIndex: number, weight: number) => {
     setState((prev) => {
       const newExercises = [...prev.exercises];
-      newExercises[index] = { ...newExercises[index], weightUsedKg: weight };
+      const exercise = { ...newExercises[exerciseIndex] };
+      const newWeights = [...exercise.weightsPerSet];
+      newWeights[setIndex] = weight;
+      exercise.weightsPerSet = newWeights;
+      exercise.weightUsedKg = Math.round((newWeights.reduce((a, b) => a + b, 0) / newWeights.length) * 2) / 2;
+      newExercises[exerciseIndex] = exercise;
       return { ...prev, exercises: newExercises };
     });
   }, []);
@@ -144,6 +154,6 @@ export function useWorkoutSession() {
     startSession,
     markExercise,
     completeSession,
-    updateWeight,
+    updateSetWeight,
   };
 }

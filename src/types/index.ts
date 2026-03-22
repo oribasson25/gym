@@ -227,6 +227,7 @@ export type ActiveSessionExercise = Exercise & {
   sets: number;
   reps: number;
   weightUsedKg: number;
+  weightsPerSet: number[];
   targetWeightKg: number;
   orderIndex: number;
   planExerciseId: string;

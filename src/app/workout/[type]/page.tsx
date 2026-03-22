@@ -32,7 +32,7 @@ export default function WorkoutPage() {
     error,
     startSession,
     markExercise,
-    updateWeight,
+    updateSetWeight,
   } = useWorkoutSession();
 
   const [started, setStarted] = useState(false);
@@ -58,7 +58,7 @@ export default function WorkoutPage() {
 
   const handleMark = async (status: ExerciseStatus) => {
     if (!currentExercise) return;
-    await markExercise(status, currentExercise.weightUsedKg);
+    await markExercise(status);
   };
 
   if (!workoutInfo) {
@@ -202,10 +202,10 @@ export default function WorkoutPage() {
                   </p>
                 </div>
 
-                {/* Weight selector */}
-                <div className="bg-slate-50 dark:bg-slate-700 rounded-2xl p-4 space-y-2">
+                {/* Per-set weight sliders */}
+                <div className="bg-slate-50 dark:bg-slate-700 rounded-2xl p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">משקל לאימון</p>
+                    <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">משקל לכל סט</p>
                     {currentExercise.suggestion && (
                       <SuggestionBadge
                         lastWeight={currentExercise.suggestion.lastWeight}
@@ -213,40 +213,18 @@ export default function WorkoutPage() {
                       />
                     )}
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() =>
-                        updateWeight(
-                          currentIndex,
-                          Math.max(0, currentExercise.weightUsedKg - 2.5)
-                        )
-                      }
-                      className="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center
-                                 justify-center text-slate-600 dark:text-slate-300 font-bold text-xl active:scale-90 transition-all"
-                    >
-                      −
-                    </button>
-                    <div className="flex-1 text-center">
-                      <span className="text-3xl font-black text-slate-800 dark:text-slate-100">
-                        {currentExercise.weightUsedKg}
-                      </span>
-                      <span className="text-slate-400 dark:text-slate-500 text-base font-medium mr-1">ק״ג</span>
-                    </div>
-                    <button
-                      onClick={() =>
-                        updateWeight(
-                          currentIndex,
-                          currentExercise.weightUsedKg + 2.5
-                        )
-                      }
-                      className="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center
-                                 justify-center text-slate-600 dark:text-slate-300 font-bold text-xl active:scale-90 transition-all"
-                    >
-                      +
-                    </button>
-                  </div>
+
+                  {currentExercise.weightsPerSet.map((weight, setIdx) => (
+                    <SetWeightSlider
+                      key={setIdx}
+                      setNumber={setIdx + 1}
+                      weight={weight}
+                      onChange={(w) => updateSetWeight(currentIndex, setIdx, w)}
+                    />
+                  ))}
+
                   {currentExercise.suggestion?.reasoning && (
-                    <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
+                    <p className="text-xs text-slate-400 dark:text-slate-500 text-center pt-1">
                       {currentExercise.suggestion.reasoning}
                     </p>
                   )}
@@ -268,6 +246,67 @@ export default function WorkoutPage() {
         </AnimatePresence>
       </div>
     </AppShell>
+  );
+}
+
+function SetWeightSlider({
+  setNumber,
+  weight,
+  onChange,
+}: {
+  setNumber: number;
+  weight: number;
+  onChange: (weight: number) => void;
+}) {
+  const maxWeight = Math.max(200, weight + 50);
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+          סט {setNumber}
+        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => onChange(Math.max(0, weight - 2.5))}
+            className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600
+                       flex items-center justify-center text-slate-500 dark:text-slate-400 font-bold text-sm
+                       active:scale-90 transition-all"
+          >
+            −
+          </button>
+          <span className="text-lg font-black text-slate-800 dark:text-slate-100 min-w-[3.5rem] text-center">
+            {weight}<span className="text-xs font-medium text-slate-400 mr-0.5">ק״ג</span>
+          </span>
+          <button
+            onClick={() => onChange(weight + 2.5)}
+            className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600
+                       flex items-center justify-center text-slate-500 dark:text-slate-400 font-bold text-sm
+                       active:scale-90 transition-all"
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={maxWeight}
+        step={2.5}
+        value={weight}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="w-full h-2 rounded-full appearance-none cursor-pointer
+                   bg-slate-200 dark:bg-slate-600
+                   [&::-webkit-slider-thumb]:appearance-none
+                   [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
+                   [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary
+                   [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer
+                   [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5
+                   [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary
+                   [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-md
+                   [&::-moz-range-thumb]:cursor-pointer"
+      />
+    </div>
   );
 }
 
