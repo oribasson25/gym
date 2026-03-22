@@ -128,7 +128,7 @@ export default function AboutPage() {
   const slide = slides[current];
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-slate-900 flex flex-col overflow-x-hidden relative">
       {/* Close button */}
       <button
         onClick={() => router.back()}
@@ -156,7 +156,7 @@ export default function AboutPage() {
           className="flex-1 flex flex-col"
         >
           {/* Gradient header */}
-          <div className={`bg-gradient-to-br ${slide.bg} px-6 pt-16 pb-10 text-center`}>
+          <div className={`bg-gradient-to-br ${slide.bg} px-6 pt-20 pb-10 text-center`} style={{ paddingTop: "max(5rem, calc(env(safe-area-inset-top, 0px) + 3.5rem))" }}>
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
