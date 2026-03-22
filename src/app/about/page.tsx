@@ -128,66 +128,60 @@ export default function AboutPage() {
   const slide = slides[current];
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col overflow-x-hidden relative">
-      {/* Close button */}
-      <button
-        onClick={() => router.back()}
-        className="absolute top-4 left-4 z-50 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white active:scale-90 transition-all"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
-      {/* Slide counter */}
-      <div className="absolute top-5 right-4 z-50 text-white/60 text-sm font-medium">
-        {current + 1} / {slides.length}
+    <div className="fixed inset-0 bg-slate-900 flex flex-col">
+      {/* Top bar */}
+      <div className="relative z-50 flex items-center justify-between px-4 pt-3 pb-2" style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))" }}>
+        <button
+          onClick={() => router.back()}
+          className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white active:scale-90 transition-all"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <span className="text-white/60 text-sm font-medium">
+          {current + 1} / {slides.length}
+        </span>
       </div>
 
       {/* Main content */}
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={current}
-          custom={direction}
-          initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="flex-1 flex flex-col"
-        >
-          {/* Gradient header */}
-          <div className={`bg-gradient-to-br ${slide.bg} px-6 pt-20 pb-10 text-center`} style={{ paddingTop: "max(5rem, calc(env(safe-area-inset-top, 0px) + 3.5rem))" }}>
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", damping: 12, stiffness: 200, delay: 0.1 }}
-              className="text-7xl mb-4"
-            >
-              {slide.icon}
-            </motion.div>
-            <h1 className="text-3xl font-black text-white mb-2">{slide.title}</h1>
-            <p className="text-white/80 text-base">{slide.subtitle}</p>
-          </div>
-
-          {/* Bullets */}
-          <div className="flex-1 bg-slate-900 px-6 py-8">
-            <div className="space-y-4 max-w-sm mx-auto">
-              {slide.bullets.map((bullet, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 + i * 0.08 }}
-                  className="flex items-start gap-3"
-                >
-                  <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                  <p className="text-white/90 text-base leading-relaxed">{bullet}</p>
-                </motion.div>
-              ))}
+      <div className="flex-1 overflow-y-auto">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={current}
+            custom={direction}
+            initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            {/* Gradient header */}
+            <div className={`bg-gradient-to-br ${slide.bg} px-6 pt-8 pb-10 text-center`}>
+              <div className="text-7xl mb-4">{slide.icon}</div>
+              <h1 className="text-3xl font-black text-white mb-2">{slide.title}</h1>
+              <p className="text-white/80 text-base">{slide.subtitle}</p>
             </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+
+            {/* Bullets */}
+            <div className="px-6 py-8">
+              <div className="space-y-4 max-w-sm mx-auto">
+                {slide.bullets.map((bullet, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15 + i * 0.08 }}
+                    className="flex items-start gap-3"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <p className="text-white/90 text-base leading-relaxed">{bullet}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       {/* Bottom navigation */}
       <div className="bg-slate-900 px-6 pb-8 pt-2">
