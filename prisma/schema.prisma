@@ -27,6 +27,8 @@ model User {
   sentMessages       Message[] @relation("SentMessages")
   receivedMessages   Message[] @relation("ReceivedMessages")
   scheduledWorkouts  ScheduledWorkout[]
+  pushSubscriptions  PushSubscription[]
+  notifications      Notification[]
 }
 
 model Exercise {
@@ -204,4 +206,33 @@ model Message {
 
   @@index([senderId, receiverId])
   @@index([receiverId, read])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // CHAT_MESSAGE | WORKOUT_REMINDER
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
+import { notifyUser } from "@/lib/notify";
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
@@ -56,6 +57,16 @@ export async function POST(req: NextRequest) {
       content: content.trim(),
     },
   });
+
+  // Send notification to receiver (fire-and-forget)
+  notifyUser({
+    userId: receiverId,
+    type: "CHAT_MESSAGE",
+    title: `הודעה חדשה מ${user.name}`,
+    body: content.trim().substring(0, 100),
+    metadata: { senderId: user.id, senderName: user.name },
+    url: user.role === "ADMIN" ? "/chat" : `/chat/${user.id}`,
+  }).catch(() => {});
 
   return NextResponse.json({ message }, { status: 201 });
 }

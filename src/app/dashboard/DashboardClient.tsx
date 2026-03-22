@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { WORKOUT_TYPES, WorkoutType, CalendarDay, ScheduledItem } from "@/types";
 import { WorkoutCalendar } from "@/components/calendar/WorkoutCalendar";
 import { Card } from "@/components/ui/Card";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { PushOptIn } from "@/components/notifications/PushOptIn";
 import Link from "next/link";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
@@ -47,6 +49,7 @@ export function DashboardClient({
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <Link
               href="/about"
               className="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center
@@ -72,6 +75,11 @@ export function DashboardClient({
               {userName.charAt(0).toUpperCase()}
             </Link>
           </div>
+        </div>
+
+        {/* Push notification opt-in */}
+        <div className="mb-4">
+          <PushOptIn />
         </div>
 
         {/* Calendar */}
