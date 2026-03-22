@@ -1,12 +1,29 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { AppShell } from "@/components/layout/AppShell";
 import { DifficultySlider } from "@/components/workout/DifficultySlider";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { ShareCard } from "@/components/workout/ShareCard";
+import { useShareWorkout } from "@/hooks/useShareWorkout";
+import { WorkoutType, ExerciseStatus } from "@/types";
+
+type SessionData = {
+  workoutType: WorkoutType;
+  completedAt: string;
+  difficultyRating: number;
+  exercises: {
+    exercise: { nameHe: string };
+    weightUsedKg: number;
+    sets: number;
+    reps: number;
+    status: ExerciseStatus;
+  }[];
+  user?: { name: string };
+};
 
 function SummaryContent() {
   const router = useRouter();
@@ -16,6 +33,17 @@ function SummaryContent() {
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [sessionData, setSessionData] = useState<SessionData | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { shareWorkout, isGenerating } = useShareWorkout(cardRef);
+  const redirectTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup redirect timer
+  useEffect(() => {
+    return () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current);
+    };
+  }, []);
 
   const handleSave = async () => {
     if (!sessionId || rating === 0) return;
@@ -27,14 +55,32 @@ function SummaryContent() {
       body: JSON.stringify({ difficultyRating: rating }),
     });
 
+    // Fetch session data for share card
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setSessionData({
+          ...data.session,
+          difficultyRating: rating,
+        });
+      }
+    } catch {
+      // ignore
+    }
+
     setSaved(true);
-    setTimeout(() => router.push("/dashboard"), 1800);
     setLoading(false);
+  };
+
+  const handleShare = async () => {
+    if (redirectTimer.current) clearTimeout(redirectTimer.current);
+    await shareWorkout();
   };
 
   if (saved) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
+      <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4 px-4">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -52,6 +98,51 @@ function SummaryContent() {
           <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100">כל הכבוד!</h2>
           <p className="text-slate-500 dark:text-slate-400">האימון נשמר בהצלחה</p>
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="flex flex-col gap-3 w-full max-w-sm"
+        >
+          {sessionData && (
+            <Button
+              fullWidth
+              size="lg"
+              loading={isGenerating}
+              onClick={handleShare}
+            >
+              שתף אימון
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            fullWidth
+            onClick={() => router.push("/dashboard")}
+          >
+            חזור לדשבורד
+          </Button>
+        </motion.div>
+
+        {/* Hidden share card for capture */}
+        {sessionData && (
+          <div style={{ position: "fixed", left: -9999, top: 0 }}>
+            <ShareCard
+              ref={cardRef}
+              workoutType={sessionData.workoutType}
+              completedAt={sessionData.completedAt}
+              exercises={sessionData.exercises.map((e) => ({
+                nameHe: e.exercise.nameHe,
+                weightUsedKg: e.weightUsedKg,
+                sets: e.sets,
+                reps: e.reps,
+                status: e.status,
+              }))}
+              difficultyRating={sessionData.difficultyRating}
+              userName={sessionData.user?.name || ""}
+            />
+          </div>
+        )}
       </div>
     );
   }

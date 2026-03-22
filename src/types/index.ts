@@ -156,6 +156,16 @@ export const MUSCLE_GROUP_LABELS: Record<MuscleGroup, string> = {
   OTHER: "אחר",
 };
 
+export type CalendarDay = {
+  date: string;
+  workouts: {
+    sessionId: string;
+    workoutType: WorkoutType;
+    exerciseCount: number;
+    difficultyRating: number | null;
+  }[];
+};
+
 // Prisma model shapes (re-exported for convenience)
 export type Exercise = {
   id: string;

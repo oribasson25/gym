@@ -29,37 +29,34 @@ export function ChatClient({ currentUserId, partnerId, partnerName }: ChatClient
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const fetchMessages = useCallback(
-    async (after?: string) => {
-      const params = new URLSearchParams({ partnerId });
-      if (after) params.set("after", after);
+  const fetchMessages = useCallback(async () => {
+    const params = new URLSearchParams({ partnerId });
 
-      try {
-        const res = await fetch(`/api/messages?${params}`);
-        if (!res.ok) return;
-        const data = await res.json();
-        const newMessages: Message[] = data.messages;
+    try {
+      const res = await fetch(`/api/messages?${params}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const serverMessages: Message[] = data.messages;
 
-        if (newMessages.length > 0) {
-          lastCreatedAt.current = newMessages[newMessages.length - 1].createdAt;
+      setMessages((prev) => {
+        // Keep temp messages that haven't been confirmed yet
+        const tempMessages = prev.filter((m) => m.id.startsWith("temp-"));
+        const serverIds = new Set(serverMessages.map((m) => m.id));
+        // Only keep temp messages whose content isn't already in server response
+        const pendingTemps = tempMessages.filter(
+          (t) => !serverMessages.some((s) => s.content === t.content && s.senderId === t.senderId)
+        );
+        const merged = [...serverMessages, ...pendingTemps];
+        return merged;
+      });
 
-          if (after) {
-            setMessages((prev) => {
-              const existingIds = new Set(prev.map((m) => m.id));
-              const unique = newMessages.filter((m) => !existingIds.has(m.id));
-              return unique.length > 0 ? [...prev, ...unique] : prev;
-            });
-          } else {
-            setMessages(newMessages);
-          }
-          setTimeout(scrollToBottom, 100);
-        }
-      } catch {
-        // silently ignore
+      if (serverMessages.length > 0) {
+        setTimeout(scrollToBottom, 100);
       }
-    },
-    [partnerId, scrollToBottom]
-  );
+    } catch {
+      // silently ignore
+    }
+  }, [partnerId, scrollToBottom]);
 
   // Initial load
   useEffect(() => {
@@ -69,8 +66,8 @@ export function ChatClient({ currentUserId, partnerId, partnerName }: ChatClient
   // Polling
   useEffect(() => {
     const id = setInterval(() => {
-      if (document.visibilityState === "visible" && lastCreatedAt.current) {
-        fetchMessages(lastCreatedAt.current);
+      if (document.visibilityState === "visible") {
+        fetchMessages();
       }
     }, 3000);
     return () => clearInterval(id);

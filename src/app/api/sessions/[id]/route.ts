@@ -14,6 +14,7 @@ export async function GET(
         orderBy: { orderIndex: "asc" },
       },
       plan: true,
+      user: { select: { name: true } },
     },
   });
 

@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AppShell } from "@/components/layout/AppShell";
 import { WorkoutTypeCard } from "@/components/workout/WorkoutTypeCard";
 import { Button } from "@/components/ui/Button";
-import { WORKOUT_TYPES, WorkoutType } from "@/types";
+import { WORKOUT_TYPES, WorkoutType, CalendarDay } from "@/types";
+import { WorkoutCalendar } from "@/components/calendar/WorkoutCalendar";
+import { Card } from "@/components/ui/Card";
 import Link from "next/link";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
@@ -15,6 +17,8 @@ interface DashboardClientProps {
   userRole: string;
   lastByType: Record<WorkoutType, Date | null>;
   needsPhotoReminder: boolean;
+  calendarDays: CalendarDay[];
+  streak: number;
 }
 
 export function DashboardClient({
@@ -22,6 +26,8 @@ export function DashboardClient({
   userRole,
   lastByType,
   needsPhotoReminder,
+  calendarDays,
+  streak,
 }: DashboardClientProps) {
   const [showPhotoModal, setShowPhotoModal] = useState(needsPhotoReminder);
 
@@ -65,6 +71,11 @@ export function DashboardClient({
             </Link>
           </div>
         </div>
+
+        {/* Calendar */}
+        <Card className="mb-6">
+          <WorkoutCalendar initialDays={calendarDays} initialStreak={streak} />
+        </Card>
 
         {/* Section title */}
         <div className="mb-4">
