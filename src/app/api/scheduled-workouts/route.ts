@@ -95,6 +95,14 @@ export async function DELETE(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
+  const all = searchParams.get("all");
+
+  if (all === "true") {
+    await prisma.scheduledWorkout.deleteMany({
+      where: { userId: user.id },
+    });
+    return NextResponse.json({ success: true });
+  }
 
   if (!id) {
     return NextResponse.json({ error: "id is required" }, { status: 400 });

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/cn";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { CalendarDay, WORKOUT_TYPES, WorkoutType } from "@/types";
+import { CalendarDay, WORKOUT_TYPES, WorkoutType, ScheduledItem } from "@/types";
 
 const DAY_NAMES = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ש׳"];
 const DAY_NAMES_FULL = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
@@ -18,7 +18,7 @@ const HEBREW_MONTHS = [
 interface WorkoutCalendarProps {
   initialDays: CalendarDay[];
   initialStreak: number;
-  initialScheduledMap: Record<string, string[]>;
+  initialScheduledMap: Record<string, ScheduledItem[]>;
 }
 
 function getWorkoutColor(workoutType: string): string {
@@ -39,7 +39,7 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
   const [month, setMonth] = useState(today.getMonth());
   const [days, setDays] = useState<CalendarDay[]>(initialDays);
   const [streak, setStreak] = useState(initialStreak);
-  const [scheduledMap, setScheduledMap] = useState<Record<string, string[]>>(initialScheduledMap);
+  const [scheduledMap, setScheduledMap] = useState<Record<string, ScheduledItem[]>>(initialScheduledMap);
   const [loading, setLoading] = useState(false);
   const [direction, setDirection] = useState(0);
   const [selectedDay, setSelectedDay] = useState<CalendarDay | null>(null);
@@ -49,6 +49,10 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
   const [showRecurring, setShowRecurring] = useState(false);
   const [recurringData, setRecurringData] = useState<{ dayOfWeek: number; workoutType: string }[]>([]);
   const [savingRecurring, setSavingRecurring] = useState(false);
+
+  // Scheduled day detail modal
+  const [scheduledDayDate, setScheduledDayDate] = useState<string | null>(null);
+  const [showAddMore, setShowAddMore] = useState(false);
 
   const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
 
@@ -106,15 +110,34 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
   };
 
   // Schedule a specific date
-  const handleScheduleDate = async (workoutType: WorkoutType) => {
-    if (!scheduleDate) return;
+  const handleScheduleDate = async (workoutType: WorkoutType, fromDayModal?: boolean) => {
+    const targetDate = fromDayModal ? scheduledDayDate : scheduleDate;
+    if (!targetDate) return;
     await fetch("/api/scheduled-workouts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ workoutType, date: scheduleDate }),
+      body: JSON.stringify({ workoutType, date: targetDate }),
     });
-    setScheduleDate(null);
-    fetchMonth(year, month);
+    if (fromDayModal) {
+      setShowAddMore(false);
+    } else {
+      setScheduleDate(null);
+    }
+    await fetchMonth(year, month);
+  };
+
+  // Delete a specific scheduled workout
+  const handleDeleteSchedule = async (id: string) => {
+    await fetch(`/api/scheduled-workouts?id=${id}`, { method: "DELETE" });
+    await fetchMonth(year, month);
+  };
+
+  // Delete ALL schedules
+  const handleClearAll = async () => {
+    await fetch("/api/scheduled-workouts?all=true", { method: "DELETE" });
+    setScheduledDayDate(null);
+    setRecurringData([]);
+    await fetchMonth(year, month);
   };
 
   // Save recurring schedule
@@ -134,7 +157,6 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
   };
 
   const handleRemoveRecurring = async (dayOfWeek: number) => {
-    // Find and delete via the API (need to get the id)
     const res = await fetch("/api/scheduled-workouts");
     if (res.ok) {
       const data = await res.json();
@@ -166,6 +188,10 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
   const todayDate = today.getDate();
   const todayMonth = today.getMonth();
   const todayYear = today.getFullYear();
+
+  // Get data for the scheduled day modal
+  const scheduledDayItems = scheduledDayDate ? (scheduledMap[scheduledDayDate] || []) : [];
+  const scheduledDayWorkouts = scheduledDayDate ? (dayMap.get(scheduledDayDate)?.workouts || []) : [];
 
   return (
     <>
@@ -254,7 +280,11 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
                   key={dateStr}
                   type="button"
                   onClick={() => {
-                    if (hasWorkout) {
+                    if (hasScheduled) {
+                      // Open scheduled day detail modal
+                      setScheduledDayDate(dateStr);
+                      setShowAddMore(false);
+                    } else if (hasWorkout) {
                       setSelectedDay(calDay);
                     } else if (isFuture || isToday) {
                       setScheduleDate(dateStr);
@@ -286,11 +316,11 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
                     </div>
                   ) : hasScheduled ? (
                     <div className="flex gap-0.5">
-                      {scheduled.slice(0, 3).map((wt, wi) => (
+                      {scheduled.slice(0, 3).map((item, wi) => (
                         <div
                           key={wi}
                           className="w-1.5 h-1.5 rounded-full opacity-40"
-                          style={{ backgroundColor: getWorkoutColor(wt) }}
+                          style={{ backgroundColor: getWorkoutColor(item.workoutType) }}
                         />
                       ))}
                     </div>
@@ -308,7 +338,7 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
         )}
       </div>
 
-      {/* Day detail modal (completed workouts) */}
+      {/* Day detail modal (completed workouts only, no scheduled) */}
       <Modal
         open={!!selectedDay}
         onClose={() => setSelectedDay(null)}
@@ -341,7 +371,143 @@ export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMa
         )}
       </Modal>
 
-      {/* Schedule specific date modal */}
+      {/* Scheduled day detail modal */}
+      <Modal
+        open={!!scheduledDayDate && !showAddMore}
+        onClose={() => setScheduledDayDate(null)}
+        title={scheduledDayDate ? `${parseInt(scheduledDayDate.split("-")[2])} ${HEBREW_MONTHS[parseInt(scheduledDayDate.split("-")[1]) - 1]}` : ""}
+      >
+        {scheduledDayDate && (
+          <div className="space-y-4">
+            {/* Scheduled workouts list */}
+            {scheduledDayItems.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase">אימונים מתוזמנים</p>
+                {scheduledDayItems.map((item, idx) => {
+                  const wasCompleted = scheduledDayWorkouts.some(
+                    (w) => w.workoutType === item.workoutType
+                  );
+                  return (
+                    <div
+                      key={`${item.id}-${idx}`}
+                      className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-700/50"
+                    >
+                      <span className="text-2xl">{getWorkoutIcon(item.workoutType)}</span>
+                      <div className="flex-1">
+                        <p className="font-semibold text-slate-800 dark:text-slate-100">
+                          {getWorkoutLabel(item.workoutType)}
+                        </p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {wasCompleted ? (
+                            <span className="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                              <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                                <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                              </svg>
+                              בוצע
+                            </span>
+                          ) : (
+                            <span className="text-xs font-medium text-slate-400 flex items-center gap-1">
+                              <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
+                              </svg>
+                              ממתין
+                            </span>
+                          )}
+                          {item.isRecurring && (
+                            <span className="text-xs text-slate-300 dark:text-slate-500">
+                              (קבוע)
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteSchedule(item.id)}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all active:scale-90"
+                        title="מחק תזמון"
+                      >
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                          <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022 1.005 11.36A2.75 2.75 0 007.77 20h4.46a2.75 2.75 0 002.75-2.689l1.006-11.36.148.022a.75.75 0 10.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Completed workouts for this day */}
+            {scheduledDayWorkouts.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase">אימונים שבוצעו</p>
+                {scheduledDayWorkouts.map((w) => (
+                  <div
+                    key={w.sessionId}
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-green-50 dark:bg-green-900/20"
+                  >
+                    <span className="text-2xl">{getWorkoutIcon(w.workoutType)}</span>
+                    <div className="flex-1">
+                      <p className="font-semibold text-slate-800 dark:text-slate-100">
+                        {getWorkoutLabel(w.workoutType)}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {w.exerciseCount} תרגילים
+                        {w.difficultyRating && ` · קושי ${w.difficultyRating}/10`}
+                      </p>
+                    </div>
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-500">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Action buttons */}
+            <div className="space-y-2 pt-2">
+              <Button
+                fullWidth
+                onClick={() => setShowAddMore(true)}
+              >
+                + הוסף אימון נוסף
+              </Button>
+              <Button
+                variant="ghost"
+                fullWidth
+                onClick={handleClearAll}
+                className="!text-red-500"
+              >
+                נקה את כל התזמונים
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Add more workouts to scheduled day */}
+      <Modal
+        open={!!scheduledDayDate && showAddMore}
+        onClose={() => setShowAddMore(false)}
+        title="הוסף אימון"
+      >
+        <div className="space-y-2">
+          {WORKOUT_TYPES.map((wt) => (
+            <button
+              key={wt.type}
+              onClick={() => handleScheduleDate(wt.type, true)}
+              className="flex items-center gap-3 w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-700/50 active:scale-[0.98] transition-all"
+            >
+              <span className="text-2xl">{wt.icon}</span>
+              <div className="flex-1 text-right">
+                <p className="font-semibold text-slate-800 dark:text-slate-100">{wt.labelHe}</p>
+                <p className="text-xs text-slate-400">{wt.description}</p>
+              </div>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: wt.color }} />
+            </button>
+          ))}
+        </div>
+      </Modal>
+
+      {/* Schedule specific date modal (for days without schedules) */}
       <Modal
         open={!!scheduleDate}
         onClose={() => setScheduleDate(null)}

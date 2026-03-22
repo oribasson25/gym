@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { DashboardClient } from "./DashboardClient";
-import { WorkoutType, CalendarDay } from "@/types";
+import { WorkoutType, CalendarDay, ScheduledItem } from "@/types";
 import { format } from "date-fns";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
@@ -113,12 +113,12 @@ export default async function DashboardPage() {
     where: { userId: user.id, dayOfWeek: { not: null }, date: null },
   });
 
-  const scheduledMap: Record<string, string[]> = {};
+  const scheduledMap: Record<string, ScheduledItem[]> = {};
   for (const s of scheduledSpecific) {
     if (s.date) {
       const dateStr = s.date.toISOString().split("T")[0];
       if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
-      scheduledMap[dateStr].push(s.workoutType);
+      scheduledMap[dateStr].push({ id: s.id, workoutType: s.workoutType, isRecurring: false });
     }
   }
   for (const r of scheduledRecurring) {
@@ -128,7 +128,7 @@ export default async function DashboardPage() {
       if (d.getDay() === r.dayOfWeek) {
         const dateStr = d.toISOString().split("T")[0];
         if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
-        scheduledMap[dateStr].push(r.workoutType);
+        scheduledMap[dateStr].push({ id: r.id, workoutType: r.workoutType, isRecurring: true });
       }
       d.setDate(d.getDate() + 1);
     }

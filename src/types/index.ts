@@ -166,6 +166,12 @@ export type CalendarDay = {
   }[];
 };
 
+export type ScheduledItem = {
+  id: string;
+  workoutType: string;
+  isRecurring: boolean;
+};
+
 // Prisma model shapes (re-exported for convenience)
 export type Exercise = {
   id: string;

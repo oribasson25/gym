@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
-import { CalendarDay } from "@/types";
+import { CalendarDay, ScheduledItem } from "@/types";
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
@@ -114,14 +114,14 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  // Build scheduled map: date string -> workoutType[]
-  const scheduledMap: Record<string, string[]> = {};
+  // Build scheduled map: date string -> ScheduledItem[]
+  const scheduledMap: Record<string, ScheduledItem[]> = {};
 
   for (const s of scheduledSpecific) {
     if (s.date) {
       const dateStr = s.date.toISOString().split("T")[0];
       if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
-      scheduledMap[dateStr].push(s.workoutType);
+      scheduledMap[dateStr].push({ id: s.id, workoutType: s.workoutType, isRecurring: false });
     }
   }
 
@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
       if (d.getDay() === r.dayOfWeek) {
         const dateStr = d.toISOString().split("T")[0];
         if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
-        scheduledMap[dateStr].push(r.workoutType);
+        scheduledMap[dateStr].push({ id: r.id, workoutType: r.workoutType, isRecurring: true });
       }
       d.setDate(d.getDate() + 1);
     }

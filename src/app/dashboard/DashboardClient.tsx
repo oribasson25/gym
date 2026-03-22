@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AppShell } from "@/components/layout/AppShell";
 import { WorkoutTypeCard } from "@/components/workout/WorkoutTypeCard";
 import { Button } from "@/components/ui/Button";
-import { WORKOUT_TYPES, WorkoutType, CalendarDay } from "@/types";
+import { WORKOUT_TYPES, WorkoutType, CalendarDay, ScheduledItem } from "@/types";
 import { WorkoutCalendar } from "@/components/calendar/WorkoutCalendar";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
@@ -19,7 +19,7 @@ interface DashboardClientProps {
   needsPhotoReminder: boolean;
   calendarDays: CalendarDay[];
   streak: number;
-  scheduledMap: Record<string, string[]>;
+  scheduledMap: Record<string, ScheduledItem[]>;
 }
 
 export function DashboardClient({
