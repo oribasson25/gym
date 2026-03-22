@@ -105,6 +105,35 @@ export default async function DashboardPage() {
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
+  // Scheduled workouts for the calendar
+  const scheduledSpecific = await prisma.scheduledWorkout.findMany({
+    where: { userId: user.id, date: { gte: startOfMonth, lte: endOfMonth } },
+  });
+  const scheduledRecurring = await prisma.scheduledWorkout.findMany({
+    where: { userId: user.id, dayOfWeek: { not: null }, date: null },
+  });
+
+  const scheduledMap: Record<string, string[]> = {};
+  for (const s of scheduledSpecific) {
+    if (s.date) {
+      const dateStr = s.date.toISOString().split("T")[0];
+      if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
+      scheduledMap[dateStr].push(s.workoutType);
+    }
+  }
+  for (const r of scheduledRecurring) {
+    if (r.dayOfWeek === null) continue;
+    const d = new Date(startOfMonth);
+    while (d <= endOfMonth) {
+      if (d.getDay() === r.dayOfWeek) {
+        const dateStr = d.toISOString().split("T")[0];
+        if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
+        scheduledMap[dateStr].push(r.workoutType);
+      }
+      d.setDate(d.getDate() + 1);
+    }
+  }
+
   return (
     <DashboardClient
       userName={user.name}
@@ -113,6 +142,7 @@ export default async function DashboardPage() {
       needsPhotoReminder={needsPhoto}
       calendarDays={calendarDays}
       streak={streak}
+      scheduledMap={scheduledMap}
     />
   );
 }

@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/cn";
 import { Modal } from "@/components/ui/Modal";
-import { CalendarDay, WORKOUT_TYPES } from "@/types";
+import { Button } from "@/components/ui/Button";
+import { CalendarDay, WORKOUT_TYPES, WorkoutType } from "@/types";
 
 const DAY_NAMES = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ש׳"];
+const DAY_NAMES_FULL = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 
 const HEBREW_MONTHS = [
   "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
@@ -16,6 +18,7 @@ const HEBREW_MONTHS = [
 interface WorkoutCalendarProps {
   initialDays: CalendarDay[];
   initialStreak: number;
+  initialScheduledMap: Record<string, string[]>;
 }
 
 function getWorkoutColor(workoutType: string): string {
@@ -30,15 +33,22 @@ function getWorkoutIcon(workoutType: string): string {
   return WORKOUT_TYPES.find((wt) => wt.type === workoutType)?.icon || "";
 }
 
-export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarProps) {
+export function WorkoutCalendar({ initialDays, initialStreak, initialScheduledMap }: WorkoutCalendarProps) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [days, setDays] = useState<CalendarDay[]>(initialDays);
   const [streak, setStreak] = useState(initialStreak);
+  const [scheduledMap, setScheduledMap] = useState<Record<string, string[]>>(initialScheduledMap);
   const [loading, setLoading] = useState(false);
   const [direction, setDirection] = useState(0);
   const [selectedDay, setSelectedDay] = useState<CalendarDay | null>(null);
+
+  // Schedule modals
+  const [scheduleDate, setScheduleDate] = useState<string | null>(null);
+  const [showRecurring, setShowRecurring] = useState(false);
+  const [recurringData, setRecurringData] = useState<{ dayOfWeek: number; workoutType: string }[]>([]);
+  const [savingRecurring, setSavingRecurring] = useState(false);
 
   const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
 
@@ -51,6 +61,7 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
         const data = await res.json();
         setDays(data.days);
         setStreak(data.streak);
+        setScheduledMap(data.scheduledMap || {});
       }
     } catch {
       // ignore
@@ -58,33 +69,88 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
     setLoading(false);
   }, []);
 
+  const fetchRecurring = useCallback(async () => {
+    try {
+      const res = await fetch("/api/scheduled-workouts");
+      if (res.ok) {
+        const data = await res.json();
+        setRecurringData(
+          (data.recurring || []).map((r: { dayOfWeek: number; workoutType: string }) => ({
+            dayOfWeek: r.dayOfWeek,
+            workoutType: r.workoutType,
+          }))
+        );
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const goToPrev = () => {
     setDirection(-1);
-    if (month === 0) {
-      setYear(year - 1);
-      setMonth(11);
-      fetchMonth(year - 1, 11);
-    } else {
-      setMonth(month - 1);
-      fetchMonth(year, month - 1);
-    }
+    const newMonth = month === 0 ? 11 : month - 1;
+    const newYear = month === 0 ? year - 1 : year;
+    setYear(newYear);
+    setMonth(newMonth);
+    fetchMonth(newYear, newMonth);
   };
 
   const goToNext = () => {
     if (isCurrentMonth) return;
     setDirection(1);
-    if (month === 11) {
-      setYear(year + 1);
-      setMonth(0);
-      fetchMonth(year + 1, 0);
-    } else {
-      setMonth(month + 1);
-      fetchMonth(year, month + 1);
+    const newMonth = month === 11 ? 0 : month + 1;
+    const newYear = month === 11 ? year + 1 : year;
+    setYear(newYear);
+    setMonth(newMonth);
+    fetchMonth(newYear, newMonth);
+  };
+
+  // Schedule a specific date
+  const handleScheduleDate = async (workoutType: WorkoutType) => {
+    if (!scheduleDate) return;
+    await fetch("/api/scheduled-workouts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workoutType, date: scheduleDate }),
+    });
+    setScheduleDate(null);
+    fetchMonth(year, month);
+  };
+
+  // Save recurring schedule
+  const handleSaveRecurring = async (dayOfWeek: number, workoutType: string) => {
+    setSavingRecurring(true);
+    await fetch("/api/scheduled-workouts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workoutType, dayOfWeek }),
+    });
+    setRecurringData((prev) => {
+      const filtered = prev.filter((r) => r.dayOfWeek !== dayOfWeek);
+      return [...filtered, { dayOfWeek, workoutType }];
+    });
+    setSavingRecurring(false);
+    fetchMonth(year, month);
+  };
+
+  const handleRemoveRecurring = async (dayOfWeek: number) => {
+    // Find and delete via the API (need to get the id)
+    const res = await fetch("/api/scheduled-workouts");
+    if (res.ok) {
+      const data = await res.json();
+      const toDelete = (data.recurring || []).find(
+        (r: { dayOfWeek: number; id: string }) => r.dayOfWeek === dayOfWeek
+      );
+      if (toDelete) {
+        await fetch(`/api/scheduled-workouts?id=${toDelete.id}`, { method: "DELETE" });
+        setRecurringData((prev) => prev.filter((r) => r.dayOfWeek !== dayOfWeek));
+        fetchMonth(year, month);
+      }
     }
   };
 
   // Build calendar grid
-  const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0=Sun
+  const firstDayOfMonth = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const dayMap = new Map<string, CalendarDay>();
@@ -117,6 +183,19 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
             )}
           </div>
           <div className="flex items-center gap-1">
+            {/* Recurring schedule button */}
+            <button
+              onClick={() => {
+                fetchRecurring();
+                setShowRecurring(true);
+              }}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-90 transition-all"
+              title="לוח זמנים קבוע"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+              </svg>
+            </button>
             <button
               onClick={goToNext}
               disabled={isCurrentMonth}
@@ -159,24 +238,32 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
           >
             {cells.map((day, i) => {
               if (day === null) {
-                return <div key={`empty-${i}`} className="h-10" />;
+                return <div key={`empty-${i}`} className="h-11" />;
               }
 
               const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
               const calDay = dayMap.get(dateStr);
               const isToday = day === todayDate && month === todayMonth && year === todayYear;
               const hasWorkout = !!calDay && calDay.workouts.length > 0;
+              const scheduled = scheduledMap[dateStr];
+              const hasScheduled = !!scheduled && scheduled.length > 0;
+              const isFuture = new Date(dateStr) >= new Date(today.toISOString().split("T")[0]);
 
               return (
                 <button
                   key={dateStr}
                   type="button"
-                  onClick={() => hasWorkout && setSelectedDay(calDay)}
+                  onClick={() => {
+                    if (hasWorkout) {
+                      setSelectedDay(calDay);
+                    } else if (isFuture || isToday) {
+                      setScheduleDate(dateStr);
+                    }
+                  }}
                   className={cn(
-                    "h-10 rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all",
-                    hasWorkout && "active:scale-90 cursor-pointer",
+                    "h-11 rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all active:scale-90",
                     isToday && "bg-primary/10 dark:bg-primary/20",
-                    !hasWorkout && !isToday && "cursor-default"
+                    hasScheduled && !hasWorkout && "ring-2 ring-inset ring-primary/30 dark:ring-primary/40",
                   )}
                 >
                   <span
@@ -187,7 +274,7 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
                   >
                     {day}
                   </span>
-                  {hasWorkout && (
+                  {hasWorkout ? (
                     <div className="flex gap-0.5">
                       {calDay.workouts.slice(0, 3).map((w, wi) => (
                         <div
@@ -197,7 +284,17 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
                         />
                       ))}
                     </div>
-                  )}
+                  ) : hasScheduled ? (
+                    <div className="flex gap-0.5">
+                      {scheduled.slice(0, 3).map((wt, wi) => (
+                        <div
+                          key={wi}
+                          className="w-1.5 h-1.5 rounded-full opacity-40"
+                          style={{ backgroundColor: getWorkoutColor(wt) }}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
                 </button>
               );
             })}
@@ -211,7 +308,7 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
         )}
       </div>
 
-      {/* Day detail modal */}
+      {/* Day detail modal (completed workouts) */}
       <Modal
         open={!!selectedDay}
         onClose={() => setSelectedDay(null)}
@@ -242,6 +339,74 @@ export function WorkoutCalendar({ initialDays, initialStreak }: WorkoutCalendarP
             ))}
           </div>
         )}
+      </Modal>
+
+      {/* Schedule specific date modal */}
+      <Modal
+        open={!!scheduleDate}
+        onClose={() => setScheduleDate(null)}
+        title={scheduleDate ? `תזמן אימון ל-${parseInt(scheduleDate.split("-")[2])} ${HEBREW_MONTHS[parseInt(scheduleDate.split("-")[1]) - 1]}` : ""}
+      >
+        <div className="space-y-2">
+          {WORKOUT_TYPES.map((wt) => (
+            <button
+              key={wt.type}
+              onClick={() => handleScheduleDate(wt.type)}
+              className="flex items-center gap-3 w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-700/50 active:scale-[0.98] transition-all"
+            >
+              <span className="text-2xl">{wt.icon}</span>
+              <div className="flex-1 text-right">
+                <p className="font-semibold text-slate-800 dark:text-slate-100">{wt.labelHe}</p>
+                <p className="text-xs text-slate-400">{wt.description}</p>
+              </div>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: wt.color }} />
+            </button>
+          ))}
+        </div>
+      </Modal>
+
+      {/* Recurring schedule modal */}
+      <Modal
+        open={showRecurring}
+        onClose={() => setShowRecurring(false)}
+        title="לוח זמנים שבועי"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-slate-400">בחר סוג אימון לכל יום בשבוע</p>
+          {DAY_NAMES_FULL.map((dayName, dayIndex) => {
+            const current = recurringData.find((r) => r.dayOfWeek === dayIndex);
+            return (
+              <div key={dayIndex} className="flex items-center gap-3">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 w-14 flex-shrink-0">
+                  {dayName}
+                </span>
+                <select
+                  value={current?.workoutType || ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val) {
+                      handleSaveRecurring(dayIndex, val);
+                    } else {
+                      handleRemoveRecurring(dayIndex);
+                    }
+                  }}
+                  disabled={savingRecurring}
+                  className="flex-1 rounded-xl px-3 py-2 text-sm bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <option value="">— יום חופש —</option>
+                  {WORKOUT_TYPES.map((wt) => (
+                    <option key={wt.type} value={wt.type}>
+                      {wt.icon} {wt.labelHe}
+                    </option>
+                  ))}
+                </select>
+                {current && (
+                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: getWorkoutColor(current.workoutType) }} />
+                )}
+              </div>
+            );
+          })}
+        </div>
       </Modal>
     </>
   );

@@ -24,8 +24,9 @@ model User {
   progressPhotos  ProgressPhoto[]
   mealPlans       MealPlan[]
   dailyMealLogs   DailyMealLog[]
-  sentMessages     Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
+  sentMessages       Message[] @relation("SentMessages")
+  receivedMessages   Message[] @relation("ReceivedMessages")
+  scheduledWorkouts  ScheduledWorkout[]
 }
 
 model Exercise {
@@ -175,6 +176,19 @@ model DailyMealLog {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, mealId, date])
+}
+
+model ScheduledWorkout {
+  id          String   @id @default(cuid())
+  userId      String
+  workoutType String   // PUSH | PULL | LEGS | CHEST_BACK | SHOULDERS_ARMS | FULL_BODY
+  date        DateTime? @db.Date   // specific date (null if recurring)
+  dayOfWeek   Int?                  // 0=Sun..6=Sat (null if specific date)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId, dayOfWeek])
 }
 
 model Message {

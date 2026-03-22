@@ -19,6 +19,7 @@ interface DashboardClientProps {
   needsPhotoReminder: boolean;
   calendarDays: CalendarDay[];
   streak: number;
+  scheduledMap: Record<string, string[]>;
 }
 
 export function DashboardClient({
@@ -28,6 +29,7 @@ export function DashboardClient({
   needsPhotoReminder,
   calendarDays,
   streak,
+  scheduledMap,
 }: DashboardClientProps) {
   const [showPhotoModal, setShowPhotoModal] = useState(needsPhotoReminder);
 
@@ -74,7 +76,7 @@ export function DashboardClient({
 
         {/* Calendar */}
         <Card className="mb-6">
-          <WorkoutCalendar initialDays={calendarDays} initialStreak={streak} />
+          <WorkoutCalendar initialDays={calendarDays} initialStreak={streak} initialScheduledMap={scheduledMap} />
         </Card>
 
         {/* Section title */}

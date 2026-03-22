@@ -98,5 +98,46 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ days, streak });
+  // Fetch scheduled workouts for this month
+  const scheduledSpecific = await prisma.scheduledWorkout.findMany({
+    where: {
+      userId: user.id,
+      date: { gte: startOfMonth, lte: endOfMonth },
+    },
+  });
+
+  const scheduledRecurring = await prisma.scheduledWorkout.findMany({
+    where: {
+      userId: user.id,
+      dayOfWeek: { not: null },
+      date: null,
+    },
+  });
+
+  // Build scheduled map: date string -> workoutType[]
+  const scheduledMap: Record<string, string[]> = {};
+
+  for (const s of scheduledSpecific) {
+    if (s.date) {
+      const dateStr = s.date.toISOString().split("T")[0];
+      if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
+      scheduledMap[dateStr].push(s.workoutType);
+    }
+  }
+
+  // Expand recurring into dates for the month
+  for (const r of scheduledRecurring) {
+    if (r.dayOfWeek === null) continue;
+    const d = new Date(startOfMonth);
+    while (d <= endOfMonth) {
+      if (d.getDay() === r.dayOfWeek) {
+        const dateStr = d.toISOString().split("T")[0];
+        if (!scheduledMap[dateStr]) scheduledMap[dateStr] = [];
+        scheduledMap[dateStr].push(r.workoutType);
+      }
+      d.setDate(d.getDate() + 1);
+    }
+  }
+
+  return NextResponse.json({ days, streak, scheduledMap });
 }
